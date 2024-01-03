@@ -9,9 +9,9 @@
         <meta name="description" content="">
         <meta name="viewport" content="width-device-width, initial-scale-1">
 
-        <link rel="stylesheet" href="./css/syle.css">
+        <!-- <link rel="stylesheet" href="./css/syle.css">
         <link href="favicon.ico" rel="icon">
-        <link rel="stylesheet" href="vendors/bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="vendors/bootstrap/bootstrap.min.css"> -->
 
     </head>
 
@@ -22,30 +22,30 @@
                 <th>
                     <td>
                         <div>Lat</div>
-                        <input>
+                        <input id="ocean-lat">
                     </td>
                     <td>
                         <div>Long</div>
-                        <input>
+                        <input  id="ocean-lng">
                     </td>
                     <td>
-                        <button type="submit">Submit</button>
+                        <button type="submit" id="ocean-btn">Submit</button>
                     </td>
                 </th>
 
                 <tr>
                     <td>GeoNameId</td>
-                    <td></td>
+                    <td id="ocean-geoname-id"></td>
                 </tr>
 
                 <tr>
                     <td>Ocean</td>
-                    <td></td>
+                    <td id="ocean-name"></td>
                 </tr>
 
                 <tr>
                     <td>Distance</td>
-                    <td></td>
+                    <td id="ocean-distance"></td>
                 </tr>
             </table>
             
@@ -66,7 +66,7 @@
                         <input>
                     </td>
                     <td>
-                        <button type="submit">Submit</button>
+                        <button type="submit" id="address-btn">Submit</button>
                     </td>
                 </th>
 
@@ -99,7 +99,7 @@
                         <input>
                     </td>
                     <td>
-                        <button type="submit">Submit</button>
+                        <button type="submit" id="wiki-btn">Submit</button>
                     </td>
                 </th>
 
@@ -123,9 +123,9 @@
             
         </section>
 
-        <script src="vendors/jquery/jquery.min.js"></script>
-        <script src="vendors/bootstrap/bootstrap.min.js"></script>
-        <script src="js/script.js"></script>
+        <!-- <script src="vendors/jquery/jquery.min.js"></script>
+        <script src="vendors/bootstrap/bootstrap.min.js"></script> -->
+        <script type="module" src="./js/script.js"></script>
 
     </body>
 
