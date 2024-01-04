@@ -16,7 +16,7 @@
     </head>
 
     <body>
-        <section id="api-1">
+        <section>
             <h2>Ocean</h2>
             <table>
                 <th>
@@ -26,7 +26,7 @@
                     </td>
                     <td>
                         <div>Long</div>
-                        <input  id="ocean-lng">
+                        <input id="ocean-lng">
                     </td>
                     <td>
                         <button type="submit" id="ocean-btn">Submit</button>
@@ -49,21 +49,16 @@
                 </tr>
             </table>
             
-
-
-        </section>
-
-        <section id="api-2">
             <h2>Find Nearest Address</h2>
             <table>
                 <th>
                     <td>
                         <div>Lat</div>
-                        <input>
+                        <input id="address-lat">
                     </td>
                     <td>
                         <div>Long</div>
-                        <input>
+                        <input id="address-lng">
                     </td>
                     <td>
                         <button type="submit" id="address-btn">Submit</button>
@@ -71,32 +66,27 @@
                 </th>
 
                 <tr>
-                    <td>Street</td>
-                    <td></td>
+                    <td>Street Name</td>
+                    <td id="address-street"></td>
                 </tr>
 
                 <tr>
-                    <td>Locality</td>
-                    <td></td>
+                    <td>Place Name</td>
+                    <td id="address-name"></td>
                 </tr>
 
                 <tr>
                     <td>Country Code</td>
-                    <td></td>
+                    <td id="address-code"></td>
                 </tr>
             </table>
             
-
-            
-        </section>
-
-        <section id="api-3">
             <h2>Wikipedia Search</h2>
             <table>
                 <th>
                     <td>
                         <div>Place name</div>
-                        <input>
+                        <input id="wiki-q">
                     </td>
                     <td>
                         <button type="submit" id="wiki-btn">Submit</button>
@@ -105,17 +95,17 @@
 
                 <tr>
                     <td>Title</td>
-                    <td></td>
+                    <td id="wiki-title"></td>
                 </tr>
 
                 <tr>
                     <td>Summary</td>
-                    <td></td>
+                    <td id="wiki-summary"></td>
                 </tr>
 
                 <tr>
                     <td>Wikipedia Url</td>
-                    <td></td>
+                    <td id="wiki-url"></td>
                 </tr>
             </table>
             
