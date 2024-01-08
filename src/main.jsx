@@ -6,6 +6,6 @@ import './index.css'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
-    <a href="/task/">Task</a>
+    <a href="/Task/">Task</a>
   </React.StrictMode>,
 )
