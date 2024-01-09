@@ -7,5 +7,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
     <a href="/task/">Task</a>
+    <a href="/vercelFile/">Vercel</a>
+    <a href="/vercelFile/alternate.html">Alternate</a>
   </React.StrictMode>,
 )
