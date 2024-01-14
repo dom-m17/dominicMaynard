@@ -40,5 +40,3 @@
     //         echo 'Error making API call: ' . $error->getMessage();
     //     }
     // }
-
-?>
