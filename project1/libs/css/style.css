@@ -42,3 +42,8 @@ body, html {
     width: 100%;
     border-radius: 10px;
 }
+
+.leaflet-control.custom-position {
+    position: absolute;
+    top: 5rem;
+}
