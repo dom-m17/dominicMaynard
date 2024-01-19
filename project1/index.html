@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gazeteer</title>
     <link rel="stylesheet" href="./libs/css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
      crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-easybutton/src/easy-button.css" />
   </head>
 
   <body>
@@ -15,18 +17,51 @@
       <img id="title-img" src="./resources/title.jpeg"/>
     </div>
     <div id="dropdown">
-      <select>
+      <select id="countrySelect">
         <option>United Kingdom</option>
         <option>Germany</option>
       </select>
     </div>
     <div id="map"></div>
 
+    <div id="info-modal" class="modal" data-bs-backdrop="false" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow">
+          <div class="modal-header bg-success bg-gradient text-white">
+            <h5 class="modal-title">Overview</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped">
+              <tr>
+    
+                <td>
+                  Attribute
+                </td>
+    
+                <td class="text-end">
+                  value
+                </td>
+    
+              </tr>
+                    
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </body>
 
   <script src="./libs/js/jquery-2.2.3.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
+     <script src="https://unpkg.com/leaflet-easybutton/src/easy-button.js"></script>
   <script type="module" src="./libs/js/script.js"></script>
 </html>
