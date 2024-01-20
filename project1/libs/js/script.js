@@ -53,4 +53,24 @@ layerControl.setPosition('bottomleft');
 
 L.easyButton("fa-info", function (btn, map) {
     $("#info-modal").modal("show");
-  }).addTo(map).getContainer().classList.add('custom-position');
+  }, {position: 'topright'}).addTo(map).getContainer().classList.add('info-position');
+
+L.easyButton("fa-info", function (btn, map) {
+    $("#economic-modal").modal("show");
+  }, {position: 'topright'}).addTo(map).getContainer().classList.add('economic-position');
+
+L.easyButton("fa-info", function (btn, map) {
+    $("#geographic-modal").modal("show");
+  }, {position: 'topright'}).addTo(map).getContainer().classList.add('geographic-position');
+
+L.easyButton("fa-info", function (btn, map) {
+    $("#social-modal").modal("show");
+  }, {position: 'topright'}).addTo(map).getContainer().classList.add('social-position');
+
+L.easyButton("fa-info", function (btn, map) {
+    $("#weather-modal").modal("show");
+  }, {position: 'topright'}).addTo(map).getContainer().classList.add('weather-position');
+
+$('.btn-close').on('click', function() {
+  $(".modal").modal("hide");
+});

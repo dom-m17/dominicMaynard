@@ -27,7 +27,7 @@ body, html {
 
 #dropdown {
     padding: 15px;
-    padding-right: 40px;
+    padding-right: 10px;
     z-index: 10000;
     position: fixed;
     top: 10px;
@@ -43,7 +43,37 @@ body, html {
     border-radius: 10px;
 }
 
-.leaflet-control.custom-position {
+.leaflet-control.info-position {
     position: absolute;
-    top: 5rem;
+    top: 3.5rem;
+    right: 0.5rem;
+}
+
+.leaflet-control.geographic-position {
+    position: absolute;
+    top: 6rem;
+    right: 0.5rem;
+}
+
+.leaflet-control.economic-position {
+    position: absolute;
+    top: 8.5rem;
+    right: 0.5rem;
+}
+
+.leaflet-control.social-position {
+    position: absolute;
+    top: 11rem;
+    right: 0.5rem;
+}
+
+.leaflet-control.weather-position {
+    position: absolute;
+    top: 13.5rem;
+    right: 0.5rem;
+}
+
+.btn-close {
+    min-height: 1.5rem;
+    min-width: 1.5rem;
 }
