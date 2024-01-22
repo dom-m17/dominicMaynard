@@ -35,6 +35,19 @@ body, html {
     
 }
 
+/* #submit-btn {
+    padding-top: 3.5rem;
+    padding-right: 10px;
+    z-index: 10000;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+#submit-btn input {
+    border-radius: 10px;
+} */
+
 #dropdown select {
     padding: 2px;
     font-size: x-large;
