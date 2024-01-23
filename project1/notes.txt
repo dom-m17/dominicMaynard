@@ -45,3 +45,27 @@ function onMapClick(e) {
 }
 
 map.on('click', onMapClick);
+
+
+
+function getLatAndLon(data=$('#countrySelect').val()) {
+
+        $.ajax({
+            url: "/project1/libs/php/getLatAndLon.php",
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                data: data
+            },
+            success: function(result) {
+                    const coordinates = {
+                        lat: result["lat"],
+                        lon: result["lon"]
+                    }
+                    return coordinates
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(`Error in Lat`);               
+            }
+        })
+    }

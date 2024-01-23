@@ -62,13 +62,13 @@ body, html {
     right: 0.5rem;
 }
 
-.leaflet-control.geographic-position {
+.leaflet-control.economic-position {
     position: absolute;
     top: 6rem;
     right: 0.5rem;
 }
 
-.leaflet-control.economic-position {
+.leaflet-control.geographic-position {
     position: absolute;
     top: 8.5rem;
     right: 0.5rem;

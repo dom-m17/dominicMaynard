@@ -1,9 +1,13 @@
 const countryInfo = {
     "United Kingdom": {
-        countryCode: "GB"
+        countryCode: "GB",
+        lat: 51.5072,
+        lon: 0.1276,
     },
     "Germany": {
-        countryCode: "DE"
+        countryCode: "DE",
+        lat: 52.5200,
+        lon: 13.4050,
     }
 }
 
