@@ -80,7 +80,26 @@ $(document).ready(function() {
         })
     }
 
-    function getCurrency(url, data=countryInfo[$('#countrySelect').val()]["countryCode"]) {
+    function getExchanceRate(url, data) {
+        $.ajax({
+            url: url,
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                data: data
+            },
+            success: function(result) {
+                    console.log(result["data"]);
+                    $('#exchange-rate').html(result["data"]);       
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(`Error in er`);
+                
+            }
+        })
+    }
+
+    function getFullCurrency(url, data) {
         $.ajax({
             url: url,
             type: 'POST',
@@ -91,6 +110,26 @@ $(document).ready(function() {
             success: function(result) {
                     console.log(result["data"]);
                     $('#currency').html(result["data"]);       
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(`Error in gfc`);
+                
+            }
+        })
+    }
+
+    function getCurrency(url, data=countryInfo[$('#countrySelect').val()]["countryCode"]) {
+        $.ajax({
+            url: url,
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                data: data
+            },
+            success: function(result) {
+                    console.log(result["data"]);
+                    getFullCurrency("/project1/libs/php/getFullCurrency.php", result["data"])
+                    getExchanceRate("/project1/libs/php/getExchangeRate.php", result["data"])
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(`Error`);
