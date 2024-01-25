@@ -207,6 +207,33 @@ $(document).ready(function() {
         })
     }
 
+    function getLanguage(url, data=countryInfo[$('#countrySelect').val()]["countryCode"]) {
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                data: data
+            },
+            success: function(result) {
+                    console.log(Object.values(result["data"])[0]);
+                    $('#languages').html(Object.values(result["data"])[0]);       
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(`Error in lang`);
+                
+            }
+        })
+    }
+
+    function getFlag() {
+        const countryCode = countryInfo[$('#countrySelect').val()]["countryCode"];
+        const imgElement = $('<img>');
+        imgElement.attr('src', `https://flagsapi.com/${countryCode}/shiny/48.png`);
+        $('#flag').empty().append(imgElement);
+    }
+
     $('#countrySelect').on('change', function() {
         getContinent("/project1/libs/php/getContinent.php")
         getCapitalCity("/project1/libs/php/getCapitalCity.php")
@@ -216,6 +243,8 @@ $(document).ready(function() {
         getTemperature("/project1/libs/php/getTemperature.php")
         getDescription("/project1/libs/php/getPrecipitation.php")
         getWind("/project1/libs/php/getWind.php")
+        getLanguage("/project1/libs/php/getLanguage.php")
+        getFlag();
     });
 
     
