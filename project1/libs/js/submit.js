@@ -1,8 +1,6 @@
-import countryInfo from './countryInfo.js'
-
 $(document).ready(function() {
 
-    function getContinent(url, data=countryInfo[$('#countrySelect').val()]["countryCode"]) {
+    function getContinent(url, data=$('#countrySelect').val()) {
         $.ajax({
             url: url,
             type: 'POST',
@@ -21,7 +19,7 @@ $(document).ready(function() {
         })
     }
 
-    function getCapitalCity(url, data=countryInfo[$('#countrySelect').val()]["countryCode"]) {
+    function getCapitalCity(url, data=$('#countrySelect').val()) {
         $.ajax({
             url: url,
             type: 'POST',
@@ -40,7 +38,7 @@ $(document).ready(function() {
         })
     }
 
-    function getArea(url, data=countryInfo[$('#countrySelect').val()]["countryCode"]) {
+    function getArea(url, data=$('#countrySelect').val()) {
         $.ajax({
             url: url,
             type: 'POST',
@@ -60,7 +58,7 @@ $(document).ready(function() {
         })
     }
 
-    function getPopulation(url, data=countryInfo[$('#countrySelect').val()]["countryCode"]) {
+    function getPopulation(url, data=$('#countrySelect').val()) {
         $.ajax({
             url: url,
             type: 'POST',
@@ -118,7 +116,7 @@ $(document).ready(function() {
         })
     }
 
-    function getCurrency(url, data=countryInfo[$('#countrySelect').val()]["countryCode"]) {
+    function getCurrency(url, data=$('#countrySelect').val()) {
         $.ajax({
             url: url,
             type: 'POST',
@@ -207,7 +205,29 @@ $(document).ready(function() {
         })
     }
 
-    function getLanguage(url, data=countryInfo[$('#countrySelect').val()]["countryCode"]) {
+    function getWeather(url, data=$('#countrySelect').val()) {
+
+        console.log("The code given is " + data)
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                data: data
+            },
+            success: function(result) {
+                    console.log(result["data"]);      
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(`Error`);               
+            }
+        })
+    }
+
+    
+
+    function getLanguage(url, data=$('#countrySelect').val()) {
 
         $.ajax({
             url: url,
@@ -228,23 +248,24 @@ $(document).ready(function() {
     }
 
     function getFlag() {
-        const countryCode = countryInfo[$('#countrySelect').val()]["countryCode"];
+        const countryCode = $('#countrySelect').val();
         const imgElement = $('<img>');
         imgElement.attr('src', `https://flagsapi.com/${countryCode}/shiny/48.png`);
         $('#flag').empty().append(imgElement);
     }
 
     $('#countrySelect').on('change', function() {
-        getContinent("/project1/libs/php/getContinent.php")
-        getCapitalCity("/project1/libs/php/getCapitalCity.php")
-        getArea("/project1/libs/php/getArea.php")
-        getPopulation("/project1/libs/php/getPopulation.php")
-        getCurrency("/project1/libs/php/getCurrency.php")
-        getTemperature("/project1/libs/php/getTemperature.php")
-        getDescription("/project1/libs/php/getPrecipitation.php")
-        getWind("/project1/libs/php/getWind.php")
-        getLanguage("/project1/libs/php/getLanguage.php")
+        getContinent("./libs/php/getContinent.php")
+        getCapitalCity("./libs/php/getCapitalCity.php")
+        getArea("./libs/php/getArea.php")
+        getPopulation("./libs/php/getPopulation.php")
+        getCurrency("./libs/php/getCurrency.php")
+        // getTemperature("./libs/php/getTemperature.php")
+        // getDescription("./libs/php/getPrecipitation.php")
+        // getWind("./libs/php/getWind.php")
+        getLanguage("./libs/php/getLanguage.php")
         getFlag();
+        getWeather("./libs/php/getWeather.php")
     });
 
     

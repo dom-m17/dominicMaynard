@@ -74,3 +74,21 @@ L.easyButton("fa-info", function (btn, map) {
 $('.btn-close').on('click', function() {
   $(".modal").modal("hide");
 });
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  fetch('./resources/countryBorders.geo.json')
+    .then(response => response.json())
+    .then(data => {
+      const selectElement = document.getElementById('countrySelect');
+
+      
+      data.features.forEach(feature => {
+        const option = document.createElement('option');
+        option.value = feature.properties.iso_a2;
+        option.textContent = feature.properties.name;
+        selectElement.appendChild(option);
+      });
+    })
+    .catch(error => console.error('Error fetching JSON:', error));
+})
