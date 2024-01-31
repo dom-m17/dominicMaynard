@@ -82,7 +82,8 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(data => {
       const selectElement = document.getElementById('countrySelect');
 
-      
+      data.features.sort((a, b) => a.properties.name.localeCompare(b.properties.name));
+
       data.features.forEach(feature => {
         const option = document.createElement('option');
         option.value = feature.properties.iso_a2;
@@ -91,4 +92,4 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     })
     .catch(error => console.error('Error fetching JSON:', error));
-})
+});

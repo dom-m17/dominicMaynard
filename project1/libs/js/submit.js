@@ -1,271 +1,224 @@
 $(document).ready(function() {
 
-    function getContinent(url, data=$('#countrySelect').val()) {
-        $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                data: data
-            },
-            success: function(result) {
-                    console.log(result["data"]); 
-                    $('#continent').html(result["data"]);       
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(`Error`);
-                
-            }
-        })
+    // This is the object that will hold all data about the selected country.
+    // It starts off blank and will get updated at the end of the script
+
+    const countryInfo = {
+        name: "",
+        iso_a2: "",
+        iso_a3: "",
+        continent: "",
+        capitalCity: "",
+        landArea: 0,
+        population: 0,
+        currencyCode: "",
+        currency: "",
+        exchangeRate: 0,
+        temperature: 0,
+        weatherDescription: "",
+        windSpeed: 0,
+        language: "",
+        language2: "",
+        language3: ""
     }
 
-    function getCapitalCity(url, data=$('#countrySelect').val()) {
-        $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                data: data
-            },
-            success: function(result) {
-                    console.log(result["data"]);
-                    $('#capital-city').html(result["data"]);       
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(`Error`);
-                
-            }
-        })
+    // The following functions are responsible for making ajax requests
+    // that will update the countryInfo object
+
+    function ajaxRequest(url, data) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: url,
+                type: 'POST',
+                dataType: 'json',
+                data: data,
+                success: function(result) {
+                    // console.log(result["data"]);
+                    resolve(result["data"]);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('Error');
+                    reject(errorThrown);
+                }
+            });
+        });
     }
-
-    function getArea(url, data=$('#countrySelect').val()) {
-        $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                data: data
-            },
-            success: function(result) {
-                    console.log(result["data"]);
-                    const formattedData = parseInt(result["data"], 10).toLocaleString('en-US');
-                    $('#land-area').html(formattedData);       
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(`Error`);
-                
-            }
-        })
-    }
-
-    function getPopulation(url, data=$('#countrySelect').val()) {
-        $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                data: data
-            },
-            success: function(result) {
-                    console.log(result["data"]);
-                    const formattedData = parseInt(result["data"], 10).toLocaleString('en-US');
-                    $('#population').html(formattedData);       
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(`Error`);
-                
-            }
-        })
-    }
-
-    function getExchanceRate(url, data) {
-        $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                data: data
-            },
-            success: function(result) {
-                    console.log(result["data"]);
-                    $('#exchange-rate').html(result["data"]);       
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(`Error in er`);
-                
-            }
-        })
-    }
-
-    function getFullCurrency(url, data) {
-        $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                data: data
-            },
-            success: function(result) {
-                    console.log(result["data"]);
-                    $('#currency').html(result["data"]);       
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(`Error in gfc`);
-                
-            }
-        })
-    }
-
-    function getCurrency(url, data=$('#countrySelect').val()) {
-        $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                data: data
-            },
-            success: function(result) {
-                    console.log(result["data"]);
-                    getFullCurrency("/project1/libs/php/getFullCurrency.php", result["data"])
-                    getExchanceRate("/project1/libs/php/getExchangeRate.php", result["data"])
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(`Error`);
-                
-            }
-        })
-    }
-
-    function getTemperature(url, coordinates={
-        lat: countryInfo[$('#countrySelect').val()]["lat"],
-        lon: countryInfo[$('#countrySelect').val()]["lon"]
-    }) {
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                lat: coordinates["lat"],
-                lon: coordinates["lon"]
-            },
-            success: function(result) {
-                    console.log(result["data"]);
-                    $('#temperature').html(result["data"]);       
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(`Error`);               
-            }
-        })
-    }
-
-    function getDescription(url, coordinates={
-        lat: countryInfo[$('#countrySelect').val()]["lat"],
-        lon: countryInfo[$('#countrySelect').val()]["lon"]
-    }) {
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                lat: coordinates["lat"],
-                lon: coordinates["lon"]
-            },
-            success: function(result) {
-                    console.log(result["data"]);
-                    $('#weather-description').html(result["data"]);       
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(`Error`);               
-            }
-        })
-    }
-
-    function getWind(url, coordinates={
-        lat: countryInfo[$('#countrySelect').val()]["lat"],
-        lon: countryInfo[$('#countrySelect').val()]["lon"]
-    }) {
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                lat: coordinates["lat"],
-                lon: coordinates["lon"]
-            },
-            success: function(result) {
-                    console.log(result["data"]);
-                    $('#wind-speed').html(result["data"]);       
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(`Error`);               
-            }
-        })
-    }
-
-    function getWeather(url, data=$('#countrySelect').val()) {
-
-        console.log("The code given is " + data)
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                data: data
-            },
-            success: function(result) {
-                    console.log(result["data"]);      
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(`Error`);               
-            }
-        })
-    }
-
     
-
-    function getLanguage(url, data=$('#countrySelect').val()) {
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                data: data
-            },
-            success: function(result) {
-                    console.log(Object.values(result["data"])[0]);
-                    $('#languages').html(Object.values(result["data"])[0]);       
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(`Error in lang`);
-                
-            }
-        })
+    async function getContinent() {
+        try {
+            const result = await ajaxRequest("./libs/php/getContinent.php", {
+                data: $('#countrySelect').val()
+            });
+            countryInfo["continent"] = result;
+        } catch (error) {
+            console.error('Error in getContinent:', error);
+        }
+    }
+    
+    async function getCapitalCity() {
+        try {
+            const result = await ajaxRequest("./libs/php/getCapitalCity.php", {
+                data: $('#countrySelect').val()
+            });
+            countryInfo["capitalCity"] = result;
+        } catch (error) {
+            console.error('Error in getCapitalCity:', error);
+        }
+    }
+    
+    async function getArea() {
+        try {
+            const result = await ajaxRequest("./libs/php/getArea.php", {
+                data: $('#countrySelect').val()
+            });
+            const data = parseInt(result, 10).toLocaleString('en-US');
+            countryInfo["data"] = result;
+        } catch (error) {
+            console.error('Error in getArea:', error);
+        }
+    }
+    
+    async function getPopulation() {
+        try {
+            const result = await ajaxRequest("./libs/php/getPopulation.php", {
+                data: $('#countrySelect').val()
+            });
+            const data = parseInt(result, 10).toLocaleString('en-US');
+            countryInfo["population"] = result;
+        } catch (error) {
+            console.error('Error in getPopulation:', error);
+        }
     }
 
-    function getFlag() {
+    async function getCurrencyCode() {
+        try {
+            const result = await ajaxRequest("./libs/php/getCurrencyCode.php", {
+                data: $('#countrySelect').val()
+            });
+            countryInfo["currencyCode"] = result;
+        } catch (error) {
+            console.error('Error in getCurrencyCode:', error);
+        }
+    }
+
+    async function getCurrency() {
+        try {
+            await getCurrencyCode();
+            const result = await ajaxRequest("./libs/php/getCurrency.php", {
+                data: countryInfo["currencyCode"]
+            });
+            countryInfo["currency"] = result;
+        } catch (error) {
+            console.error('Error in getCurrency:', error);
+        }
+    }
+    
+    async function getExchanceRate() {
+        try {
+            await getCurrencyCode();
+            const result = await ajaxRequest("./libs/php/getExchangeRate.php", {
+                data: countryInfo["currencyCode"]
+            });
+            countryInfo["exchangeRate"] = result;
+        } catch (error) {
+            console.error('Error in getExchangeRate:', error);
+        }
+    }
+
+    async function getTemperature() {
+        try {
+            const result = await ajaxRequest("./libs/php/getTemperature.php", {
+                lat: countryInfo[$('#countrySelect').val()]["lat"],
+                lon: countryInfo[$('#countrySelect').val()]["lon"]
+            });
+            countryInfo["temperature"] = result;
+        } catch (error) {
+            console.error('Error in getTemperature:', error);
+        }
+    }
+    
+    async function getDescription() {
+        try {
+            const result = await ajaxRequest("./libs/php/getPrecipitation.php", {
+                lat: countryInfo[$('#countrySelect').val()]["lat"],
+                lon: countryInfo[$('#countrySelect').val()]["lon"]
+            });
+            countryInfo["weatherDescription"] = result;
+        } catch (error) {
+            console.error('Error in getDescription:', error);
+        }
+    }
+    
+    async function getWind() {
+        try {
+            const result = await ajaxRequest("./libs/php/getWind.php", {
+                lat: countryInfo[$('#countrySelect').val()]["lat"],
+                lon: countryInfo[$('#countrySelect').val()]["lon"]
+            });
+            countryInfo["windSpeed"] = result;
+        } catch (error) {
+            console.error('Error in getWind:', error);
+        }
+    }
+    
+    async function getLanguage() {
+        try {
+            const result = await ajaxRequest("./libs/php/getLanguage.php", {
+                data: $('#countrySelect').val()
+            });
+            countryInfo["language"] = Object.values(result)[0];
+            countryInfo["language2"] = Object.values(result)[1];
+            countryInfo["language3"] = Object.values(result)[2];
+        } catch (error) {
+            console.error('Error in getLanguage:', error);
+        }
+    }
+
+    function setFlag() {
         const countryCode = $('#countrySelect').val();
         const imgElement = $('<img>');
         imgElement.attr('src', `https://flagsapi.com/${countryCode}/shiny/48.png`);
         $('#flag').empty().append(imgElement);
     }
 
-    $('#countrySelect').on('change', function() {
-        getContinent("./libs/php/getContinent.php")
-        getCapitalCity("./libs/php/getCapitalCity.php")
-        getArea("./libs/php/getArea.php")
-        getPopulation("./libs/php/getPopulation.php")
-        getCurrency("./libs/php/getCurrency.php")
-        // getTemperature("./libs/php/getTemperature.php")
-        // getDescription("./libs/php/getPrecipitation.php")
-        // getWind("./libs/php/getWind.php")
-        getLanguage("./libs/php/getLanguage.php")
-        getFlag();
-        getWeather("./libs/php/getWeather.php")
+    // The below code will call the functions that will update the object.
+    // Upon completion, a function will be called to update the HTML
+
+    $('#countrySelect').on('change', async function() {
+        try {
+            await Promise.all([
+                getContinent(),
+                getCapitalCity(),
+                getArea(),
+                getPopulation(),
+                getCurrencyCode(),
+                getExchanceRate(),
+                getCurrency(),
+                // getTemperature(),
+                // getDescription(),
+                // getWind(),
+                getLanguage()
+            ]);
+
+            console.log(countryInfo)
+    
+            setFlag();
+    
+            $('#continent').html(countryInfo["continent"]);
+            $('#capital-city').html(countryInfo["capitalCity"]);
+            $('#land-area').html(countryInfo["landArea"]);
+            $('#population').html(countryInfo["population"]);
+            $('#currency').html(countryInfo["currency"]);
+            $('#exchange-rate').html(countryInfo["exchangeRate"]);
+            $('#temperature').html(countryInfo["temperature"]);
+            $('#weather-description').html(countryInfo["weatherDescription"]);
+            $('#wind-speed').html(countryInfo["windSpeed"]);
+            $('#language').html(countryInfo["language"]);
+            if (countryInfo["language2"]) {$('#language').append('<br>' + countryInfo["language2"]);}
+            if (countryInfo["language3"]) {$('#language').append('<br>' + countryInfo["language3"]);}
+        } catch (error) {
+            console.error('An error occurred:', error);
+        }
     });
 
     
