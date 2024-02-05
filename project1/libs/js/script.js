@@ -93,3 +93,90 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     .catch(error => console.error('Error fetching JSON:', error));
 });
+
+// Below is functionality to set the view when choosing a country
+function calculateCentroid(geometry) {
+  const type = geometry.type;
+  let coords;
+
+  if (type === 'Polygon') {
+    coords = geometry.coordinates[0];
+  } else if (type === 'MultiPolygon') {
+    let totalX = 0;
+    let totalY = 0;
+    let numPoints = 0;
+
+    geometry.coordinates.forEach(polygon => {
+      polygon[0].forEach(point => {
+        totalX += point[0];
+        totalY += point[1];
+        numPoints++;
+      });
+    });
+
+    if (numPoints === 0) {
+      console.error('No coordinates found in MultiPolygon.');
+      return null;
+    }
+
+    const centroidX = totalX / numPoints;
+    const centroidY = totalY / numPoints;
+
+    return [centroidY, centroidX];
+  } else {
+    console.error('Unsupported geometry type:', type);
+    return null;
+  }
+
+  let x = 0;
+  let y = 0;
+
+  for (let i = 0; i < coords.length; i++) {
+    x += coords[i][0];
+    y += coords[i][1];
+  }
+
+  const centroidX = x / coords.length;
+  const centroidY = y / coords.length;
+
+  return [centroidY, centroidX];
+}
+
+const highlightStyle = {
+  weight: 2,
+  color: 'green',
+  dashArray: '',
+  fillOpacity: 0.2
+};
+
+
+let geojsonLayer;
+
+$('#countrySelect').on('change', async function() {
+  const selectedISO_A2 = $(this).val();
+
+  fetch('./resources/countryBorders.geo.json')
+    .then(response => response.json())
+    .then(data => {
+      // Find the selected country in the GeoJSON object
+      const selectedCountry = data.features.find(feature => feature.properties.iso_a2 === selectedISO_A2);
+
+      if (selectedCountry) {
+        // Clear existing GeoJSON layer if it exists
+        if (geojsonLayer) {
+          map.removeLayer(geojsonLayer);
+        }
+
+        // Create a new GeoJSON layer with the selected country's geometry and apply the highlight style
+        geojsonLayer = L.geoJSON(selectedCountry, {
+          style: highlightStyle
+        }).addTo(map);
+
+        // Fit the map view to the bounds of the highlighted GeoJSON layer
+        map.fitBounds(geojsonLayer.getBounds());
+      } else {
+        console.error('Selected country not found in GeoJSON data.');
+      }
+    })
+    .catch(error => console.error('Error fetching GeoJSON data:', error));
+});

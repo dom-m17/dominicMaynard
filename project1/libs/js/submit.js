@@ -220,6 +220,4 @@ $(document).ready(function() {
             console.error('An error occurred:', error);
         }
     });
-
-    
 });
