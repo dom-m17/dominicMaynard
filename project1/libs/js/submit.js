@@ -43,6 +43,19 @@ $(document).ready(function() {
             });
         });
     }
+
+    async function setParams() {
+        const selectedISO_A2 = $('#countrySelect').val();
+        fetch('./resources/countryBorders.geo.json')
+        .then(response => response.json())
+        .then(data => {
+            const selectedCountry = data.features.find(feature => feature.properties.iso_a2 === selectedISO_A2);
+            countryInfo["iso_a2"] = selectedCountry.properties.iso_a2;
+            countryInfo["iso_a3"] = selectedCountry.properties.iso_a3;
+            countryInfo["name"] = selectedCountry.properties.name;
+        })
+        .catch(error => console.error('Error fetching JSON:', error));
+    }
     
     async function getContinent() {
         try {
@@ -72,7 +85,7 @@ $(document).ready(function() {
                 data: $('#countrySelect').val()
             });
             const data = parseInt(result, 10).toLocaleString('en-US');
-            countryInfo["data"] = result;
+            countryInfo["landArea"] = data;
         } catch (error) {
             console.error('Error in getArea:', error);
         }
@@ -124,42 +137,6 @@ $(document).ready(function() {
             console.error('Error in getExchangeRate:', error);
         }
     }
-
-    async function getTemperature() {
-        try {
-            const result = await ajaxRequest("./libs/php/getTemperature.php", {
-                lat: countryInfo[$('#countrySelect').val()]["lat"],
-                lon: countryInfo[$('#countrySelect').val()]["lon"]
-            });
-            countryInfo["temperature"] = result;
-        } catch (error) {
-            console.error('Error in getTemperature:', error);
-        }
-    }
-    
-    async function getDescription() {
-        try {
-            const result = await ajaxRequest("./libs/php/getPrecipitation.php", {
-                lat: countryInfo[$('#countrySelect').val()]["lat"],
-                lon: countryInfo[$('#countrySelect').val()]["lon"]
-            });
-            countryInfo["weatherDescription"] = result;
-        } catch (error) {
-            console.error('Error in getDescription:', error);
-        }
-    }
-    
-    async function getWind() {
-        try {
-            const result = await ajaxRequest("./libs/php/getWind.php", {
-                lat: countryInfo[$('#countrySelect').val()]["lat"],
-                lon: countryInfo[$('#countrySelect').val()]["lon"]
-            });
-            countryInfo["windSpeed"] = result;
-        } catch (error) {
-            console.error('Error in getWind:', error);
-        }
-    }
     
     async function getLanguage() {
         try {
@@ -174,6 +151,22 @@ $(document).ready(function() {
         }
     }
 
+    async function getWeather() {
+        try {
+            await getCapitalCity();
+            const encodedCity = encodeURIComponent(countryInfo['capitalCity']);
+            const result = await ajaxRequest("./libs/php/getWeather.php", {
+                data: encodedCity
+            });
+            console.log(result)
+            countryInfo["temperature"] = result["main"]["temp"];
+            countryInfo["windSpeed"] = result["wind"]["speed"];
+            countryInfo["weatherDescription"] = result["weather"]["0"]["description"];
+        } catch (error) {
+            console.error('Error in getWeather:', error);
+        }
+    }
+
     function setFlag() {
         const countryCode = $('#countrySelect').val();
         const imgElement = $('<img>');
@@ -185,8 +178,10 @@ $(document).ready(function() {
     // Upon completion, a function will be called to update the HTML
 
     $('#countrySelect').on('change', async function() {
+
         try {
             await Promise.all([
+                setParams(),
                 getContinent(),
                 getCapitalCity(),
                 getArea(),
@@ -194,13 +189,9 @@ $(document).ready(function() {
                 getCurrencyCode(),
                 getExchanceRate(),
                 getCurrency(),
-                // getTemperature(),
-                // getDescription(),
-                // getWind(),
-                getLanguage()
+                getLanguage(),
+                getWeather()
             ]);
-
-            console.log(countryInfo)
     
             setFlag();
     
@@ -216,6 +207,9 @@ $(document).ready(function() {
             $('#language').html(countryInfo["language"]);
             if (countryInfo["language2"]) {$('#language').append('<br>' + countryInfo["language2"]);}
             if (countryInfo["language3"]) {$('#language').append('<br>' + countryInfo["language3"]);}
+
+            console.log(countryInfo)
+
         } catch (error) {
             console.error('An error occurred:', error);
         }
