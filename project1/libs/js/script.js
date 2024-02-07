@@ -51,29 +51,31 @@ const layerControl = L.control.layers(basemaps).addTo(map);
 
 layerControl.setPosition('bottomleft');
 
-L.easyButton("fa-info", function (btn, map) {
-    $("#info-modal").modal("show");
-  }, {position: 'topright'}).addTo(map).getContainer().classList.add('info-position');
+function createCustomButton(iconClass, modalId, positionClass, map) {
+  return L.easyButton({
+    states: [{
+      stateName: 'default',
+      icon: `<img src="./resources/${iconClass}.png" width="20" height="20">`, // Replace with the path to your image
+      title: `Show ${modalId.replace("-modal", "")}`,
+      onClick: function (btn, map) {
+        $(`#${modalId}`).modal("show");
+      }
+    }],
+    position: 'topright'
+  }).addTo(map).getContainer().classList.add(positionClass);
+}
 
-L.easyButton("fa-info", function (btn, map) {
-    $("#economic-modal").modal("show");
-  }, {position: 'topright'}).addTo(map).getContainer().classList.add('economic-position');
-
-L.easyButton("fa-info", function (btn, map) {
-    $("#geographic-modal").modal("show");
-  }, {position: 'topright'}).addTo(map).getContainer().classList.add('geographic-position');
-
-L.easyButton("fa-info", function (btn, map) {
-    $("#social-modal").modal("show");
-  }, {position: 'topright'}).addTo(map).getContainer().classList.add('social-position');
-
-L.easyButton("fa-info", function (btn, map) {
-    $("#weather-modal").modal("show");
-  }, {position: 'topright'}).addTo(map).getContainer().classList.add('weather-position');
+createCustomButton("i", "info-modal", "info-position", map);
+createCustomButton("pound", "economic-modal", "economic-position", map);
+createCustomButton("earth", "geographic-modal", "geographic-position", map);
+createCustomButton("person", "social-modal", "social-position", map);
+createCustomButton("cloud", "weather-modal", "weather-position", map);
 
 $('.btn-close').on('click', function() {
   $(".modal").modal("hide");
 });
+
+$('.btn-close').html('<img src="./resources/x.png" width="20" height="20">');
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -142,37 +144,28 @@ function calculateCentroid(geometry) {
   return [centroidY, centroidX];
 }
 
-const highlightStyle = {
-  weight: 2,
-  color: 'green',
-  dashArray: '',
-  fillOpacity: 0.2
-};
-
-
-let geojsonLayer;
-
 $('#countrySelect').on('change', async function() {
   const selectedISO_A2 = $(this).val();
+  const highlightStyle = {
+    weight: 2,
+    color: 'green',
+    dashArray: '',
+    fillOpacity: 0.2
+  };
+  let geojsonLayer;
 
   fetch('./resources/countryBorders.geo.json')
     .then(response => response.json())
     .then(data => {
-      // Find the selected country in the GeoJSON object
       const selectedCountry = data.features.find(feature => feature.properties.iso_a2 === selectedISO_A2);
 
       if (selectedCountry) {
-        // Clear existing GeoJSON layer if it exists
         if (geojsonLayer) {
           map.removeLayer(geojsonLayer);
         }
-
-        // Create a new GeoJSON layer with the selected country's geometry and apply the highlight style
         geojsonLayer = L.geoJSON(selectedCountry, {
           style: highlightStyle
         }).addTo(map);
-
-        // Fit the map view to the bounds of the highlighted GeoJSON layer
         map.fitBounds(geojsonLayer.getBounds());
       } else {
         console.error('Selected country not found in GeoJSON data.');

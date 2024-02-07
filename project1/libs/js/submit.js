@@ -15,11 +15,15 @@ $(document).ready(function() {
         currency: "",
         exchangeRate: 0,
         temperature: 0,
+        feelsLike: 0,
+        humidity: 0,
         weatherDescription: "",
         windSpeed: 0,
         language: "",
         language2: "",
-        language3: ""
+        language3: "",
+        summary: "",
+        wikiUrl: ""
     }
 
     // The following functions are responsible for making ajax requests
@@ -46,15 +50,24 @@ $(document).ready(function() {
 
     async function setParams() {
         const selectedISO_A2 = $('#countrySelect').val();
-        fetch('./resources/countryBorders.geo.json')
-        .then(response => response.json())
-        .then(data => {
-            const selectedCountry = data.features.find(feature => feature.properties.iso_a2 === selectedISO_A2);
-            countryInfo["iso_a2"] = selectedCountry.properties.iso_a2;
-            countryInfo["iso_a3"] = selectedCountry.properties.iso_a3;
-            countryInfo["name"] = selectedCountry.properties.name;
-        })
-        .catch(error => console.error('Error fetching JSON:', error));
+    
+        return fetch('./resources/countryBorders.geo.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const selectedCountry = data.features.find(feature => feature.properties.iso_a2 === selectedISO_A2);
+                countryInfo["iso_a2"] = selectedCountry.properties.iso_a2;
+                countryInfo["iso_a3"] = selectedCountry.properties.iso_a3;
+                countryInfo["name"] = selectedCountry.properties.name;
+            })
+            .catch(error => {
+                console.error('Error fetching JSON:', error);
+                throw error;
+            });
     }
     
     async function getContinent() {
@@ -97,7 +110,7 @@ $(document).ready(function() {
                 data: $('#countrySelect').val()
             });
             const data = parseInt(result, 10).toLocaleString('en-US');
-            countryInfo["population"] = result;
+            countryInfo["population"] = data;
         } catch (error) {
             console.error('Error in getPopulation:', error);
         }
@@ -132,7 +145,7 @@ $(document).ready(function() {
             const result = await ajaxRequest("./libs/php/getExchangeRate.php", {
                 data: countryInfo["currencyCode"]
             });
-            countryInfo["exchangeRate"] = result;
+            countryInfo["exchangeRate"] = result.toFixed(2);
         } catch (error) {
             console.error('Error in getExchangeRate:', error);
         }
@@ -158,12 +171,27 @@ $(document).ready(function() {
             const result = await ajaxRequest("./libs/php/getWeather.php", {
                 data: encodedCity
             });
-            console.log(result)
-            countryInfo["temperature"] = result["main"]["temp"];
-            countryInfo["windSpeed"] = result["wind"]["speed"];
+            countryInfo["temperature"] = (result["main"]["temp"] - 273.15).toFixed(2) + "°C";
+            countryInfo["feelsLike"] = (result["main"]["feels_like"] - 273.15).toFixed(2) + "°C";
+            countryInfo["humidity"] = result["main"]["humidity"] + "%";
+            countryInfo["windSpeed"] = (result["wind"]["speed"]).toFixed(0) + "mph";
             countryInfo["weatherDescription"] = result["weather"]["0"]["description"];
         } catch (error) {
             console.error('Error in getWeather:', error);
+        }
+    }
+
+    async function getWiki() {
+        try {
+            await Promise.resolve(setParams());
+            const encodedCountry = encodeURIComponent(countryInfo['name']);
+            const result = await ajaxRequest("./libs/php/getWiki.php", {
+                    data: encodedCountry
+            });
+            countryInfo["summary"] = result['geonames']['0']["summary"];
+            countryInfo["wikiUrl"] = result['geonames']['0']["wikipediaUrl"];
+        } catch (error) {
+            console.error('Error in getContinent:', error);
         }
     }
 
@@ -180,6 +208,9 @@ $(document).ready(function() {
     $('#countrySelect').on('change', async function() {
 
         try {
+
+            $('#loading-spinner').show();
+
             await Promise.all([
                 setParams(),
                 getContinent(),
@@ -190,7 +221,8 @@ $(document).ready(function() {
                 getExchanceRate(),
                 getCurrency(),
                 getLanguage(),
-                getWeather()
+                getWeather(),
+                getWiki()
             ]);
     
             setFlag();
@@ -202,16 +234,27 @@ $(document).ready(function() {
             $('#currency').html(countryInfo["currency"]);
             $('#exchange-rate').html(countryInfo["exchangeRate"]);
             $('#temperature').html(countryInfo["temperature"]);
+            $('#feels-like').html(countryInfo["feelsLike"]);
+            $('#humidity').html(countryInfo["humidity"]);
             $('#weather-description').html(countryInfo["weatherDescription"]);
             $('#wind-speed').html(countryInfo["windSpeed"]);
             $('#language').html(countryInfo["language"]);
             if (countryInfo["language2"]) {$('#language').append('<br>' + countryInfo["language2"]);}
             if (countryInfo["language3"]) {$('#language').append('<br>' + countryInfo["language3"]);}
+            $('#summary').html(countryInfo["summary"]);
 
-            console.log(countryInfo)
-
+            const wikiUrl = countryInfo["wikiUrl"];
+            if (wikiUrl) {
+                const absoluteUrl = wikiUrl.startsWith('http') ? wikiUrl : `http://${wikiUrl}`;
+                const linkElement = `<a href="${absoluteUrl}" target="_blank">${absoluteUrl}</a>`;
+                $('#wiki-url').html(linkElement);
+            } else {
+                $('#wiki-url').html("No Wikipedia link available");
+            }
         } catch (error) {
             console.error('An error occurred:', error);
+        } finally {
+            $('#loading-spinner').hide();
         }
     });
 });
