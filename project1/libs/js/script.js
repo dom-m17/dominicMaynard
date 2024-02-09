@@ -144,6 +144,8 @@ function calculateCentroid(geometry) {
   return [centroidY, centroidX];
 }
 
+let geojsonLayer;
+
 $('#countrySelect').on('change', async function() {
   const selectedISO_A2 = $(this).val();
   const highlightStyle = {
@@ -152,7 +154,7 @@ $('#countrySelect').on('change', async function() {
     dashArray: '',
     fillOpacity: 0.2
   };
-  let geojsonLayer;
+  
 
   fetch('./resources/countryBorders.geo.json')
     .then(response => response.json())
