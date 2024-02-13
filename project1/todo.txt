@@ -1,0 +1,8 @@
+1. Add new modal that utilises markers
+    - Example is earthquakes from geonames that places a marker for each earthquake found in a given area.
+        - This could then be clickable to provide info about the earthquake
+        - Could do this as well as a second, static modal.
+
+2. Set location to the user's location when page is loaded.
+    - This would simply call the same function as when a country is selected when the page is initially loaded
+    - Find a tool that can access the user's current location and use the jQuery .onLoad() method
