@@ -77,16 +77,17 @@ body, html {
     right: 0.5rem;
 }
 
-.leaflet-control.social-position {
+.leaflet-control.weather-position {
     position: absolute;
     top: 11rem;
     right: 0.5rem;
 }
 
-.leaflet-control.weather-position {
+.leaflet-control.social-position {
     position: absolute;
     top: 13.5rem;
     right: 0.5rem;
+    display: none;
 }
 
 .btn-close {

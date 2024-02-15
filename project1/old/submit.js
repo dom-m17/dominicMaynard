@@ -23,7 +23,11 @@ $(document).ready(function() {
         language2: "",
         language3: "",
         summary: "",
-        wikiUrl: ""
+        wikiUrl: "",
+        north: 0,
+        south: 0,
+        east: 0,
+        west: 0
     }
 
     // The following functions are responsible for making ajax requests
@@ -69,6 +73,92 @@ $(document).ready(function() {
                 throw error;
             });
     }
+
+    async function setBoundingBox() {
+        fetch('./resources/countryBorders.geo.json')
+        .then(response => response.json())
+        .then(geojsonData => {
+        const selectedISO_A2 = $('#countrySelect').val();
+
+        const selectedCountry = geojsonData.features.find(feature => feature.properties.iso_a2 === selectedISO_A2);
+
+        if (selectedCountry) {
+            const coordinates = selectedCountry.geometry.type === 'Polygon'
+            ? [selectedCountry.geometry.coordinates]
+            : selectedCountry.geometry.coordinates;
+            let north = -90;
+            let south = 90;
+            let east = -180;
+            let west = 180;
+            coordinates.forEach(polygon => {
+            polygon.forEach(ring => {
+                ring.forEach(coord => {
+                if (Array.isArray(coord) && coord.length === 2) {
+                    const [longitude, latitude] = coord;
+                    north = parseFloat(Math.max(north, latitude).toFixed(2));
+                    south = parseFloat(Math.min(south, latitude).toFixed(2));
+                    east = parseFloat(Math.max(east, longitude).toFixed(2));
+                    west = parseFloat(Math.min(west, longitude).toFixed(2));
+                } else {
+                    console.warn('Invalid coordinate:', coord);
+                }
+                });
+            });
+            });
+            countryInfo.north = north
+            countryInfo.south = south
+            countryInfo.east = east
+            countryInfo.west = west
+        } else {
+            console.error('Selected country not found in GeoJSON data.');
+        }
+        })
+        .catch(error => console.error('Error fetching GeoJSON data:', error));
+
+    }
+
+    let earthquakeMarkers = L.layerGroup();
+
+    async function getEarthquakes() {
+        try {
+          await Promise.resolve(setBoundingBox());
+      
+          // Clear existing earthquake markers on the map
+          earthquakeMarkers.clearLayers();
+      
+          const result = await ajaxRequest("./libs/php/getEarthquakes.php", {
+            data: {
+              north: countryInfo.north,
+              south: countryInfo.south,
+              east: countryInfo.east,
+              west: countryInfo.west,
+            }
+          });
+
+          console.log(result)
+      
+          // Loop through each earthquake in the result and create a marker
+          result.earthquakes.forEach(earthquake => {
+            const { lat, lng, magnitude, depth, datetime, eqid } = earthquake;
+            const popupContent = `<strong>Earthquake:</strong> ${eqid}<br>
+                                  <strong>Magnitude:</strong> ${magnitude}<br>
+                                  <strong>Depth:</strong> ${depth}<br>
+                                  <strong>Date and Time:</strong> ${datetime}`;
+      
+            const marker = L.marker([lat, lng])
+              .bindPopup(popupContent)
+              .addTo(earthquakeMarkers);
+          });
+
+          console.log(earthquakeMarkers)
+      
+          // Add the earthquakeMarkers to the map
+          earthquakeMarkers.addTo(map);
+      
+        } catch (error) {
+          console.error('Error in getEarthquakes:', error);
+        }
+      }
     
     async function getContinent() {
         try {
@@ -213,6 +303,7 @@ $(document).ready(function() {
 
             await Promise.all([
                 setParams(),
+                setBoundingBox(),
                 getContinent(),
                 getCapitalCity(),
                 getArea(),
@@ -222,8 +313,11 @@ $(document).ready(function() {
                 getCurrency(),
                 getLanguage(),
                 getWeather(),
-                getWiki()
+                getWiki(),
+                getEarthquakes()
             ]);
+
+            console.log(countryInfo)
     
             setFlag();
     
