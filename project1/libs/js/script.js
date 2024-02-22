@@ -68,8 +68,8 @@ function createCustomButton(iconClass, modalId, positionClass, map) {
 createCustomButton("i", "info-modal", "info-position", map);
 createCustomButton("pound", "economic-modal", "economic-position", map);
 createCustomButton("earth", "geographic-modal", "geographic-position", map);
-createCustomButton("person", "social-modal", "social-position", map);
 createCustomButton("cloud", "weather-modal", "weather-position", map);
+createCustomButton("clock", "timezone-modal", "timezone-position", map);
 
 $('.btn-close').on('click', function() {
   $(".modal").modal("hide");
@@ -205,7 +205,12 @@ $(document).ready(function() {
       north: 0,
       south: 0,
       east: 0,
-      west: 0
+      west: 0,
+      lat: 0,
+      lng: 0,
+      timezoneId: "",
+      sunrise: "",
+      sunset: ""
   }
 
   // The following functions are responsible for making ajax requests
@@ -294,11 +299,33 @@ $(document).ready(function() {
             countryInfo.south = parseFloat(south.toFixed(2));
             countryInfo.east = parseFloat(east.toFixed(2));
             countryInfo.west = parseFloat(west.toFixed(2));
+            countryInfo.lat = parseFloat(((south) + ((north) - (south)) / 2).toFixed(2))
+            countryInfo.lng = parseFloat(((west) + ((east) - (west)) / 2).toFixed(2))
         } else {
             console.error('Selected country not found in GeoJSON data.');
         }
       } catch (error) {
         console.error('Error fetching or processing GeoJSON data:', error);
+      }
+    }
+
+
+  // Need to get lat and lng coords before this function will work
+  async function getTime() {
+    try {
+        await setBoundingBox()
+        const result = await ajaxRequest("./libs/php/getTime.php", {
+          data: {
+            lat: countryInfo.lat,
+            lng: countryInfo.lng
+        }
+        });
+        console.log(result) 
+        countryInfo["timezoneId"] = result['timezoneId'];
+        countryInfo["sunrise"] = result['sunrise'];
+        countryInfo["sunset"] = result['sunset'];
+      } catch (error) {
+        console.error('Error in getTime:', error);
       }
     }
 
@@ -320,8 +347,6 @@ $(document).ready(function() {
             west: countryInfo.west,
           }
         });
-
-        console.log(result)
     
         // Loop through each earthquake in the result and create a marker
         result.earthquakes.forEach(earthquake => {
@@ -498,7 +523,8 @@ $(document).ready(function() {
               getLanguage(),
               getWeather(),
               getWiki(),
-              getEarthquakes()
+              getEarthquakes(),
+              getTime()
           ]);
 
           console.log(countryInfo)
@@ -517,6 +543,9 @@ $(document).ready(function() {
           $('#weather-description').html(countryInfo["weatherDescription"]);
           $('#wind-speed').html(countryInfo["windSpeed"]);
           $('#language').html(countryInfo["language"]);
+          $('#timezoneId').html(countryInfo["timezoneId"]);
+          $('#sunrise').html(countryInfo["sunrise"]);
+          $('#sunset').html(countryInfo["sunset"]);
           if (countryInfo["language2"]) {$('#language').append('<br>' + countryInfo["language2"]);}
           if (countryInfo["language3"]) {$('#language').append('<br>' + countryInfo["language3"]);}
           $('#summary').html(countryInfo["summary"]);
