@@ -550,6 +550,9 @@ $(document).ready(function() {
           if (countryInfo["language3"]) {$('#language').append('<br>' + countryInfo["language3"]);}
           $('#summary').html(countryInfo["summary"]);
 
+          const convertedTotal = $('#dollar-amount').val() * countryInfo.exchangeRate
+          $('#converted-total').html(convertedTotal + " " + countryInfo.currency);
+
           const wikiUrl = countryInfo["wikiUrl"];
           if (wikiUrl) {
               const absoluteUrl = wikiUrl.startsWith('http') ? wikiUrl : `http://${wikiUrl}`;
@@ -564,4 +567,14 @@ $(document).ready(function() {
           $('#loading-spinner').hide();
       }
   });
+
+  $('#dollar-amount').on('input', async function() {
+    try {
+      const convertedTotal = $('#dollar-amount').val() * countryInfo.exchangeRate
+      $('#converted-total').html(convertedTotal + " " + countryInfo.currency);
+    } catch (error) {
+      console.error('Error in converted total:', error);
+    }  
+  })
 });
+
