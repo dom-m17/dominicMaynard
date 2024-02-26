@@ -177,6 +177,14 @@ $('#countrySelect').on('change', async function() {
 });
 
 $(document).ready(function() {
+  
+  try {
+    setInitialLocation()
+  } catch (error) {
+    console.error('An error occurred:', error);
+  } finally {
+      $('#loading-spinner').hide();
+  }
 
   // This is the object that will hold all data about the selected country.
   // It starts off blank and will get updated at the end of the script
@@ -233,6 +241,31 @@ $(document).ready(function() {
               }
           });
       });
+  }
+
+  async function setInitialLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+    } else {
+        console.error("Geolocation is not supported by this browser.");
+    }
+    
+    function successCallback(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+    
+        // Use Geonames API for reverse geocoding
+        $.getJSON(`http://api.geonames.org/countryCodeJSON?lat=${latitude}&lng=${longitude}&username=dom_m17`, function(data) {
+            const countryCode = data.countryCode;
+    
+            // Set the value of the select element and trigger the change event
+            $('#countrySelect').val(countryCode).change();
+        });
+    }
+    
+    function errorCallback(error) {
+        console.error("Error getting location:", error.message);
+    }
   }
 
   async function setParams() {
@@ -549,9 +582,11 @@ $(document).ready(function() {
           if (countryInfo["language2"]) {$('#language').append('<br>' + countryInfo["language2"]);}
           if (countryInfo["language3"]) {$('#language').append('<br>' + countryInfo["language3"]);}
           $('#summary').html(countryInfo["summary"]);
-
-          const convertedTotal = $('#dollar-amount').val() * countryInfo.exchangeRate
-          $('#converted-total').html(convertedTotal + " " + countryInfo.currency);
+          
+          if (('#dollar-amount').val()) {
+            const convertedTotal = $('#dollar-amount').val() * countryInfo.exchangeRate
+            $('#converted-total').html((convertedTotal, 10).toLocaleString('en-US') + " " + countryInfo.currency); 
+          }
 
           const wikiUrl = countryInfo["wikiUrl"];
           if (wikiUrl) {
@@ -571,10 +606,9 @@ $(document).ready(function() {
   $('#dollar-amount').on('input', async function() {
     try {
       const convertedTotal = $('#dollar-amount').val() * countryInfo.exchangeRate
-      $('#converted-total').html(convertedTotal + " " + countryInfo.currency);
+      $('#converted-total').html(parseInt(convertedTotal, 10).toLocaleString('en-US') + " " + countryInfo.currency);
     } catch (error) {
       console.error('Error in converted total:', error);
     }  
   })
 });
-
