@@ -232,8 +232,7 @@ $(document).ready(function() {
               dataType: 'json',
               data: data,
               success: function(result) {
-                  // console.log(result["data"]);
-                  resolve(result["data"]);
+                resolve(result["data"]);
               },
               error: function(jqXHR, textStatus, errorThrown) {
                   console.log('Error');
@@ -250,23 +249,30 @@ $(document).ready(function() {
         console.error("Geolocation is not supported by this browser.");
     }
     
-    function successCallback(position) {
+    async function successCallback(position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-    
-        // Use Geonames API for reverse geocoding
-        $.getJSON(`http://api.geonames.org/countryCodeJSON?lat=${latitude}&lng=${longitude}&username=dom_m17`, function(data) {
-            const countryCode = data.countryCode;
-    
-            // Set the value of the select element and trigger the change event
-            $('#countrySelect').val(countryCode).change();
-        });
-    }
-    
-    function errorCallback(error) {
+        
+
+        try {
+          const result = await ajaxRequest("./libs/php/getLocation.php", {
+              data: {
+                lat: latitude,
+                lng: longitude
+              }
+          });
+          $('#countrySelect').val(result).change();
+          
+        } catch (error) {
+            console.error('Error in getLocation:', error);
+        }
+      };
+  
+      function errorCallback(error) {
         console.error("Error getting location:", error.message);
     }
   }
+  
 
   async function setParams() {
       const selectedISO_A2 = $('#countrySelect').val();
