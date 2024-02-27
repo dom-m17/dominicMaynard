@@ -258,9 +258,6 @@ $(document).ready(function() {
                         lng: longitude
                     }
                 });
-                console.log(result)
-                // const newResult = JSON.parse(result).countryCode;
-                // console.log(newResult)
                 $('#countrySelect').val(result.countryCode).change();
 
             } catch (error) {
@@ -606,6 +603,7 @@ $(document).ready(function() {
             }
 
             const wikiUrl = countryInfo["wikiUrl"];
+            console.log(wikiUrl)
             if (wikiUrl) {
                 const absoluteUrl = wikiUrl.startsWith('http') ? wikiUrl : `http://${wikiUrl}`;
                 const linkElement = `<a href="${absoluteUrl}" target="_blank">${absoluteUrl}</a>`;
