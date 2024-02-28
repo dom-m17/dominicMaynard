@@ -367,15 +367,15 @@ $(document).ready(function() {
         }
     }
 
-    let earthquakeMarkers = L.layerGroup();
+    let earthquakeMarkers = L.markerClusterGroup();  // Use marker cluster group instead of layer group
 
     async function getEarthquakes() {
         try {
             await Promise.resolve(setBoundingBox());
-
+    
             // Clear existing earthquake markers on the map
             earthquakeMarkers.clearLayers();
-
+    
             const result = await ajaxRequest("./libs/php/getEarthquakes.php", {
                 data: {
                     north: countryInfo.north,
@@ -384,34 +384,33 @@ $(document).ready(function() {
                     west: countryInfo.west,
                 }
             });
-
+    
             // Loop through each earthquake in the result and create a marker
             result.earthquakes.forEach(earthquake => {
-                const {
-                    lat,
-                    lng,
-                    magnitude,
-                    depth,
-                    datetime,
-                    eqid
-                } = earthquake;
-                const popupContent = `<strong>Earthquake:</strong> ${eqid}<br>
-                              <strong>Magnitude:</strong> ${magnitude}<br>
-                              <strong>Depth:</strong> ${depth}<br>
-                              <strong>Date and Time:</strong> ${datetime}`;
-
-                const marker = L.marker([lat, lng])
-                    .bindPopup(popupContent)
+                const { lat, lng, magnitude, depth, datetime, eqid } = earthquake;
+    
+                // Use Leaflet Extra Markers for styling
+                const marker = L.ExtraMarkers.icon({
+                    icon: 'fa-number',
+                    markerColor: 'red',
+                });
+    
+                const markerInstance = L.marker([lat, lng], { icon: marker })
+                    .bindPopup(`<strong>Earthquake:</strong> ${eqid}<br>
+                                 <strong>Magnitude:</strong> ${magnitude}<br>
+                                 <strong>Depth:</strong> ${depth}<br>
+                                 <strong>Date and Time:</strong> ${datetime}`)
                     .addTo(earthquakeMarkers);
             });
-
-            // Add the earthquakeMarkers to the map
-            earthquakeMarkers.addTo(map);
-
+    
+            // Add the earthquakeMarkers (now a cluster group) to the map
+            map.addLayer(earthquakeMarkers);
+    
         } catch (error) {
             console.error('Error in getEarthquakes:', error);
         }
     }
+    
 
     async function getNews() {
         try {
@@ -590,7 +589,7 @@ $(document).ready(function() {
                 getNews()
             ]);
 
-            console.log(countryInfo)
+            // console.log(countryInfo)
 
             setFlag();
 
@@ -620,13 +619,12 @@ $(document).ready(function() {
             }
             $('#summary').html(countryInfo["summary"]);
 
-            if (('#dollar-amount').val()) {
+            if ($('#dollar-amount').val()) {
                 const convertedTotal = $('#dollar-amount').val() * countryInfo.exchangeRate
                 $('#converted-total').html((convertedTotal, 10).toLocaleString('en-US') + " " + countryInfo.currency);
             }
 
             const wikiUrl = countryInfo["wikiUrl"];
-            console.log(wikiUrl)
             if (wikiUrl) {
                 const absoluteUrl = wikiUrl.startsWith('http') ? wikiUrl : `http://${wikiUrl}`;
                 const linkElement = `<a href="${absoluteUrl}" target="_blank">${absoluteUrl}</a>`;
