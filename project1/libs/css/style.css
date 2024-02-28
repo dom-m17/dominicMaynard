@@ -83,7 +83,7 @@ body, html {
     right: 0.5rem;
 }
 
-.leaflet-control.timezone-position {
+.leaflet-control.news-position {
     position: absolute;
     top: 13.5rem;
     right: 0.5rem;

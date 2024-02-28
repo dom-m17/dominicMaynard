@@ -64,7 +64,7 @@ createCustomButton("i", "info-modal", "info-position", map);
 createCustomButton("pound", "economic-modal", "economic-position", map);
 createCustomButton("earth", "geographic-modal", "geographic-position", map);
 createCustomButton("cloud", "weather-modal", "weather-position", map);
-createCustomButton("clock", "timezone-modal", "timezone-position", map);
+createCustomButton("news", "news-modal", "news-position", map);
 
 $('.btn-close').on('click', function() {
     $(".modal").modal("hide");
@@ -215,7 +215,11 @@ $(document).ready(function() {
         lng: 0,
         timezoneId: "",
         sunrise: "",
-        sunset: ""
+        sunset: "",
+        today: new Date().toISOString().slice(0, 10),
+        newsTitle: "",
+        newsAuthor: "",
+        newsUrl: ""
     }
 
     // The following functions are responsible for making ajax requests
@@ -345,8 +349,6 @@ $(document).ready(function() {
         }
     }
 
-
-    // Need to get lat and lng coords before this function will work
     async function getTime() {
         try {
             await setBoundingBox()
@@ -364,7 +366,6 @@ $(document).ready(function() {
             console.error('Error in getTime:', error);
         }
     }
-
 
     let earthquakeMarkers = L.layerGroup();
 
@@ -411,6 +412,25 @@ $(document).ready(function() {
             console.error('Error in getEarthquakes:', error);
         }
     }
+
+    async function getNews() {
+        try {
+            await Promise.resolve(setParams());
+            const modifiedCountryName = countryInfo.name.replace(/\s/g, '%20');
+            const result = await ajaxRequest("./libs/php/getNews.php", {
+                data: {
+                    countryName: modifiedCountryName,
+                    today: countryInfo.today
+                }
+            });
+            countryInfo["newsTitle"] = result["articles"][0]["title"];
+            countryInfo["newsAuthor"] = result["articles"][0]["author"];
+            countryInfo["newsUrl"] = result["articles"][0]["url"];
+        } catch (error) {
+            console.error('Error in getNews:', error);
+        }
+    }
+
 
     async function getContinent() {
         try {
@@ -567,7 +587,7 @@ $(document).ready(function() {
                 getWeather(),
                 getWiki(),
                 getEarthquakes(),
-                getTime()
+                getNews()
             ]);
 
             console.log(countryInfo)
@@ -589,6 +609,9 @@ $(document).ready(function() {
             $('#timezoneId').html(countryInfo["timezoneId"]);
             $('#sunrise').html(countryInfo["sunrise"]);
             $('#sunset').html(countryInfo["sunset"]);
+            $('#news-title').html(countryInfo["newsTitle"]);
+            $('#news-author').html(countryInfo["newsAuthor"]);
+            $('#news-url').html(`<a href="${countryInfo["newsUrl"]}" target="_blank">${countryInfo["newsUrl"]}</a>`);
             if (countryInfo["language2"]) {
                 $('#language').append('<br>' + countryInfo["language2"]);
             }
