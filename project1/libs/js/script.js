@@ -173,6 +173,8 @@ $('#countrySelect').on('change', async function() {
 
 $(document).ready(function() {
 
+    $('#loading-spinner').show();
+
     map.on("locationfound", setInitialLocation())
 
     // try {
@@ -621,7 +623,7 @@ $(document).ready(function() {
 
             if ($('#dollar-amount').val()) {
                 const convertedTotal = $('#dollar-amount').val() * countryInfo.exchangeRate
-                $('#converted-total').html((convertedTotal, 10).toLocaleString('en-US') + " " + countryInfo.currency);
+                $('#converted-total').html((convertedTotal).toLocaleString('en-US') + " " + countryInfo.currency);
             }
 
             const wikiUrl = countryInfo["wikiUrl"];
