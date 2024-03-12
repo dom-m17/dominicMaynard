@@ -173,20 +173,10 @@ $('#countrySelect').on('change', async function() {
 
 $(document).ready(function() {
 
+    $('#content').hide();
     $('#loading-spinner').show();
 
     map.on("locationfound", setInitialLocation())
-
-    // try {
-    //   setInitialLocation()
-    // } catch (error) {
-    //   console.error('An error occurred:', error);
-    // } finally {
-    //     $('#loading-spinner').hide();
-    // }
-
-    // This is the object that will hold all data about the selected country.
-    // It starts off blank and will get updated at the end of the script
 
     const countryInfo = {
         name: "",
@@ -255,8 +245,6 @@ $(document).ready(function() {
         async function successCallback(position) {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
-
-
             try {
                 const result = await ajaxRequest("./libs/php/getLocation.php", {
                     data: {
@@ -265,7 +253,6 @@ $(document).ready(function() {
                     }
                 });
                 $('#countrySelect').val(result.countryCode).change();
-
             } catch (error) {
                 console.error('Error in getLocation:', error);
             }
@@ -638,6 +625,7 @@ $(document).ready(function() {
             console.error('An error occurred:', error);
         } finally {
             $('#loading-spinner').hide();
+            $('#content').show();
         }
     });
 
