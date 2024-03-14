@@ -5,7 +5,7 @@ const map = L.map('map', {
     // zoomControl: false
 });
 
-map.zoomControl.setPosition('bottomright');
+// map.zoomControl.setPosition('bottomright');
 
 // Setting options for layers for user to choose
 const standard = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -50,13 +50,13 @@ function createCustomButton(iconClass, modalId, positionClass, map) {
     return L.easyButton({
         states: [{
             stateName: 'default',
-            icon: `<img src="./resources/${iconClass}.png" width="20" height="20">`, // Replace with the path to your image
+            icon: `<img src="./resources/${iconClass}.png" width="20" height="20">`,
             title: `Show ${modalId.replace("-modal", "")}`,
             onClick: function(btn, map) {
                 $(`#${modalId}`).modal("show");
             }
         }],
-        position: 'topright'
+        position: 'topleft'
     }).addTo(map).getContainer().classList.add(positionClass);
 }
 
@@ -616,7 +616,7 @@ $(document).ready(function() {
             const wikiUrl = countryInfo["wikiUrl"];
             if (wikiUrl) {
                 const absoluteUrl = wikiUrl.startsWith('http') ? wikiUrl : `http://${wikiUrl}`;
-                const linkElement = `<a href="${absoluteUrl}" target="_blank">${absoluteUrl}</a>`;
+                const linkElement = `<a href="${absoluteUrl}" target="_blank">Read More</a>`;
                 $('#wiki-url').html(linkElement);
             } else {
                 $('#wiki-url').html("No Wikipedia link available");
