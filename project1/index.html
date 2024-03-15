@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gazetteer</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="./libs/css/style.css">
     <link rel="stylesheet" href="./libs/css/bootstrap.min.css">
-
     <link rel="stylesheet" href="./libs/leaflet/css/leaflet.css" />
     <link rel="stylesheet" href="./libs/leaflet/css/easy-button.css" />
     <link rel="stylesheet" href="./libs/leaflet/css/leaflet.extra-markers.min.css" />
     <link rel="stylesheet" href="./libs/leaflet/css/MarkerCluster.css" />
     <link rel="stylesheet" href="./libs/leaflet/css/MarkerCluster.Default.css" />
-
+    <link rel="stylesheet" href="./libs/css/style.css">
   </head>
 
   <body>
@@ -67,14 +65,14 @@
                   </td>
       
                 </tr>
-  
+
                 <tr>
       
                   <td>
-                    Summary
+                    Capital City
                   </td>
       
-                  <td id="summary">
+                  <td id="capital-city">
                     
                   </td>
       
@@ -83,10 +81,34 @@
                 <tr>
       
                   <td>
-                    Wiki URL
+                    Total Land Area (SqKm)
                   </td>
       
-                  <td id="wiki-url">
+                  <td id="land-area">
+                    
+                  </td>
+      
+                </tr>
+  
+                <tr>
+      
+                  <td>
+                    Population
+                  </td>
+      
+                  <td id="population">
+                    
+                  </td>
+      
+                </tr>
+  
+                <tr>
+      
+                  <td>
+                    Official languages
+                  </td>
+      
+                  <td id="language">
                     
                   </td>
       
@@ -156,19 +178,19 @@
               </table>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn-close btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
       </div>
   
-      <!-- GEOGRAPHICAL MENU -->
+      <!-- WIKI MENU -->
   
-      <div id="geographic-modal" class="modal" data-bs-backdrop="false" tabindex="-1">
+      <div id="wiki-modal" class="modal" data-bs-backdrop="false" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
           <div class="modal-content shadow">
             <div class="modal-header bg-success bg-gradient text-white">
-              <h5 class="modal-title">Geographical Information</h5>
+              <h5 class="modal-title">Wiki Information</h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -176,10 +198,10 @@
                 <tr>
       
                   <td>
-                    Capital City
+                    Summary
                   </td>
       
-                  <td id="capital-city">
+                  <td id="summary">
                     
                   </td>
       
@@ -188,34 +210,10 @@
                 <tr>
       
                   <td>
-                    Total Land Area (SqKm)
+                    Wiki URL
                   </td>
       
-                  <td id="land-area">
-                    
-                  </td>
-      
-                </tr>
-  
-                <tr>
-      
-                  <td>
-                    Population
-                  </td>
-      
-                  <td id="population">
-                    
-                  </td>
-      
-                </tr>
-  
-                <tr>
-      
-                  <td>
-                    Official languages
-                  </td>
-      
-                  <td id="language">
+                  <td id="wiki-url">
                     
                   </td>
       
@@ -224,7 +222,7 @@
               </table>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn-close btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
@@ -304,7 +302,7 @@
               </table>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn-close btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
@@ -362,7 +360,7 @@
               </table>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn-close btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
         </div>

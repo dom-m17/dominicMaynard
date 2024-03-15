@@ -3,7 +3,7 @@
     $executionStartTime = microtime(true);
 
 
-    $url='http://api.geonames.org/wikipediaBoundingBoxJSON?north=' . $_REQUEST['data']['north'] . '&south=' . $_REQUEST['data']['south'] . '&east=' . $_REQUEST['data']['east'] . '&west=' . $_REQUEST['data']['west'] . '&username=' . 'dom_m17';    
+    $url='http://api.geonames.org/countryInfoJSON?lang=en&country=' . $_REQUEST['data'] . '&username=' . 'dom_m17';
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -20,7 +20,7 @@
     $output['status']['description'] = "success";
     $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
 
-    $output['data'] = ($decode);
+    $output['data'] = ($decode["geonames"][0]);
 
     header('Content-Type: application/json; charset=UTF-8');
 

@@ -52,7 +52,7 @@ body, html {
     top: 7rem;
 }
 
-.leaflet-control.geographic-position {
+.leaflet-control.wiki-position {
     position: absolute;
     top: 9.5rem;
 }
