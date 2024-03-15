@@ -62,7 +62,7 @@ function createCustomButton(iconClass, modalId, positionClass, map) {
 
 createCustomButton("i", "info-modal", "info-position", map);
 createCustomButton("pound", "economic-modal", "economic-position", map);
-createCustomButton("earth", "geographic-modal", "geographic-position", map);
+createCustomButton("wiki", "wiki-modal", "wiki-position", map);
 createCustomButton("cloud", "weather-modal", "weather-position", map);
 createCustomButton("news", "news-modal", "news-position", map);
 
@@ -151,6 +151,7 @@ $('#countrySelect').on('change', async function() {
     };
 
 
+    // This needs to be changed to a PHP routine
     fetch('./resources/countryBorders.geo.json')
         .then(response => response.json())
         .then(data => {
@@ -264,6 +265,7 @@ $(document).ready(function() {
     }
 
 
+    // This needs to be a PHP routine
     async function setParams() {
         const selectedISO_A2 = $('#countrySelect').val();
 
@@ -338,24 +340,6 @@ $(document).ready(function() {
         }
     }
 
-    async function getTime() {
-        try {
-            await setBoundingBox()
-            const result = await ajaxRequest("./libs/php/getTime.php", {
-                data: {
-                    lat: countryInfo.lat,
-                    lng: countryInfo.lng
-                }
-            });
-            console.log(result)
-            countryInfo["timezoneId"] = result['timezoneId'];
-            countryInfo["sunrise"] = result['sunrise'];
-            countryInfo["sunset"] = result['sunset'];
-        } catch (error) {
-            console.error('Error in getTime:', error);
-        }
-    }
-
     let earthquakeMarkers = L.markerClusterGroup();  // Use marker cluster group instead of layer group
 
     async function getEarthquakes() {
@@ -419,67 +403,27 @@ $(document).ready(function() {
         }
     }
 
-
-    async function getContinent() {
+    async function getCountryInfo() {
         try {
-            const result = await ajaxRequest("./libs/php/getContinent.php", {
+            const result = await ajaxRequest("./libs/php/getCountryInfo.php", {
                 data: $('#countrySelect').val()
             });
-            countryInfo["continent"] = result;
+            console.log(result)
+            const areaData = parseInt(result["areaInSqKm"], 10).toLocaleString('en-US');
+            countryInfo["landArea"] = areaData;
+            const populationData = parseInt(result["population"], 10).toLocaleString('en-US');
+            countryInfo["population"] = populationData;
+            countryInfo["continent"] = result["continentName"];
+            countryInfo["capitalCity"] = result["capital"];
+            countryInfo["currencyCode"] = result["currencyCode"];
         } catch (error) {
-            console.error('Error in getContinent:', error);
-        }
-    }
-
-    async function getCapitalCity() {
-        try {
-            const result = await ajaxRequest("./libs/php/getCapitalCity.php", {
-                data: $('#countrySelect').val()
-            });
-            countryInfo["capitalCity"] = result;
-        } catch (error) {
-            console.error('Error in getCapitalCity:', error);
-        }
-    }
-
-    async function getArea() {
-        try {
-            const result = await ajaxRequest("./libs/php/getArea.php", {
-                data: $('#countrySelect').val()
-            });
-            const data = parseInt(result, 10).toLocaleString('en-US');
-            countryInfo["landArea"] = data;
-        } catch (error) {
-            console.error('Error in getArea:', error);
-        }
-    }
-
-    async function getPopulation() {
-        try {
-            const result = await ajaxRequest("./libs/php/getPopulation.php", {
-                data: $('#countrySelect').val()
-            });
-            const data = parseInt(result, 10).toLocaleString('en-US');
-            countryInfo["population"] = data;
-        } catch (error) {
-            console.error('Error in getPopulation:', error);
-        }
-    }
-
-    async function getCurrencyCode() {
-        try {
-            const result = await ajaxRequest("./libs/php/getCurrencyCode.php", {
-                data: $('#countrySelect').val()
-            });
-            countryInfo["currencyCode"] = result;
-        } catch (error) {
-            console.error('Error in getCurrencyCode:', error);
+            console.error('Error in getCountryInfo:', error);
         }
     }
 
     async function getCurrency() {
         try {
-            await getCurrencyCode();
+            await getCountryInfo();
             const result = await ajaxRequest("./libs/php/getCurrency.php", {
                 data: countryInfo["currencyCode"]
             });
@@ -491,7 +435,7 @@ $(document).ready(function() {
 
     async function getExchanceRate() {
         try {
-            await getCurrencyCode();
+            await getCountryInfo();
             const result = await ajaxRequest("./libs/php/getExchangeRate.php", {
                 data: countryInfo["currencyCode"]
             });
@@ -516,7 +460,7 @@ $(document).ready(function() {
 
     async function getWeather() {
         try {
-            await getCapitalCity();
+            await getCountryInfo();
             const encodedCity = encodeURIComponent(countryInfo['capitalCity']);
             const result = await ajaxRequest("./libs/php/getWeather.php", {
                 data: encodedCity
@@ -533,15 +477,19 @@ $(document).ready(function() {
 
     async function getWiki() {
         try {
-            await Promise.resolve(setParams());
-            const encodedCountry = encodeURIComponent(countryInfo['name']);
+            await Promise.resolve(setBoundingBox());
             const result = await ajaxRequest("./libs/php/getWiki.php", {
-                data: encodedCountry
+                data: {
+                    north: countryInfo.north,
+                    south: countryInfo.south,
+                    east: countryInfo.east,
+                    west: countryInfo.west,
+                }
             });
             countryInfo["summary"] = result['geonames']['0']["summary"];
             countryInfo["wikiUrl"] = result['geonames']['0']["wikipediaUrl"];
         } catch (error) {
-            console.error('Error in getContinent:', error);
+            console.error('Error in getWiki:', error);
         }
     }
 
@@ -562,13 +510,9 @@ $(document).ready(function() {
             $('#loading-spinner').show();
 
             await Promise.all([
+                getCountryInfo(),
                 setParams(),
                 setBoundingBox(),
-                getContinent(),
-                getCapitalCity(),
-                getArea(),
-                getPopulation(),
-                getCurrencyCode(),
                 getExchanceRate(),
                 getCurrency(),
                 getLanguage(),
