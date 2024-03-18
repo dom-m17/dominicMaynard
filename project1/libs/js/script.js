@@ -150,16 +150,19 @@ $('#countrySelect').on('change', async function() {
         fillOpacity: 0.2
     };
 
-
-    // This needs to be changed to a PHP routine
-    fetch('./resources/countryBorders.geo.json')
-        .then(response => response.json())
-        .then(data => {
-            const selectedCountry = data.features.find(feature => feature.properties.iso_a2 === selectedISO_A2);
+        try {
+            const result = await $.ajax({
+                url: './libs/php/getGeoJSON.php', // Path to your PHP routine
+                type: 'POST',
+                dataType: 'json',
+                data: { selectedISO_A2: selectedISO_A2 }
+            });
+        if (result.status === 'success') {
+            const selectedCountry = result.data
 
             if (selectedCountry) {
                 if (geojsonLayer) {
-                    map.removeLayer(geojsonLayer);
+                map.removeLayer(geojsonLayer);
                 }
                 geojsonLayer = L.geoJSON(selectedCountry, {
                     style: highlightStyle
@@ -168,9 +171,44 @@ $('#countrySelect').on('change', async function() {
             } else {
                 console.error('Selected country not found in GeoJSON data.');
             }
-        })
-        .catch(error => console.error('Error fetching GeoJSON data:', error));
+        } else {
+            console.error('Error fetching GeoJSON data:', result.message);
+        }
+    } catch (error) {
+            console.error('Error fetching GeoJSON data:', error);
+    }
 });
+
+// $('#countrySelect').on('change', async function() {
+//     const selectedISO_A2 = $(this).val();
+//     const highlightStyle = {
+//         weight: 2,
+//         color: 'green',
+//         dashArray: '',
+//         fillOpacity: 0.2
+//     };
+
+
+//     // This needs to be changed to a PHP routine
+//     fetch('./resources/countryBorders.geo.json')
+//         .then(response => response.json())
+//         .then(data => {
+//             const selectedCountry = data.features.find(feature => feature.properties.iso_a2 === selectedISO_A2);
+
+//             if (selectedCountry) {
+//                 if (geojsonLayer) {
+//                     map.removeLayer(geojsonLayer);
+//                 }
+//                 geojsonLayer = L.geoJSON(selectedCountry, {
+//                     style: highlightStyle
+//                 }).addTo(map);
+//                 map.fitBounds(geojsonLayer.getBounds());
+//             } else {
+//                 console.error('Selected country not found in GeoJSON data.');
+//             }
+//         })
+//         .catch(error => console.error('Error fetching GeoJSON data:', error));
+// });
 
 $(document).ready(function() {
 
@@ -266,42 +304,120 @@ $(document).ready(function() {
 
 
     // This needs to be a PHP routine
+    // async function setParams() {
+    //     const selectedISO_A2 = $('#countrySelect').val();
+
+    //     return fetch('./resources/countryBorders.geo.json')
+    //         .then(response => {
+    //             if (!response.ok) {
+    //                 throw new Error(`HTTP error! Status: ${response.status}`);
+    //             }
+    //             return response.json();
+    //         })
+    //         .then(data => {
+    //             const selectedCountry = data.features.find(feature => feature.properties.iso_a2 === selectedISO_A2);
+    //             countryInfo["iso_a2"] = selectedCountry.properties.iso_a2;
+    //             countryInfo["iso_a3"] = selectedCountry.properties.iso_a3;
+    //             countryInfo["name"] = selectedCountry.properties.name;
+    //         })
+    //         .catch(error => {
+    //             console.error('Error fetching JSON:', error);
+    //             throw error;
+    //         });
+    // }
+
     async function setParams() {
         const selectedISO_A2 = $('#countrySelect').val();
-
-        return fetch('./resources/countryBorders.geo.json')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                const selectedCountry = data.features.find(feature => feature.properties.iso_a2 === selectedISO_A2);
-                countryInfo["iso_a2"] = selectedCountry.properties.iso_a2;
-                countryInfo["iso_a3"] = selectedCountry.properties.iso_a3;
-                countryInfo["name"] = selectedCountry.properties.name;
-            })
-            .catch(error => {
-                console.error('Error fetching JSON:', error);
-                throw error;
+    
+        try {
+            const result = await $.ajax({
+                url: './libs/php/getBaseInfo.php',
+                type: 'POST',
+                dataType: 'json',
+                data: { selectedISO_A2: selectedISO_A2 },
             });
+    
+            countryInfo["iso_a2"] = result.iso_a2;
+            countryInfo["iso_a3"] = result.iso_a3;
+            countryInfo["name"] = result.name;
+        } catch (error) {
+            console.error('Error fetching country info:', error);
+            throw error;
+        }
     }
+
+    // async function setBoundingBox() {
+    //     try {
+    //         const response = await fetch('./resources/countryBorders.geo.json');
+    //         const geojsonData = await response.json();
+
+    //         const selectedISO_A2 = $('#countrySelect').val();
+    //         const selectedCountry = geojsonData.features.find(feature => feature.properties.iso_a2 === selectedISO_A2);
+
+    //         if (selectedCountry) {
+    //             let north = -90;
+    //             let south = 90;
+    //             let east = -180;
+    //             let west = 180;
+
+    //             const processCoordinates = (coordinates) => {
+    //                 coordinates.forEach(polygon => {
+    //                     polygon.forEach(ring => {
+    //                         ring.forEach(coord => {
+    //                             if (Array.isArray(coord) && coord.length === 2) {
+    //                                 const [longitude, latitude] = coord;
+    //                                 north = Math.max(north, latitude);
+    //                                 south = Math.min(south, latitude);
+    //                                 east = Math.max(east, longitude);
+    //                                 west = Math.min(west, longitude);
+    //                             } else {
+    //                                 console.warn('Invalid coordinate:', coord);
+    //                             }
+    //                         });
+    //                     });
+    //                 });
+    //             };
+
+    //             const coordinates = selectedCountry.geometry.type === 'Polygon' ?
+    //                 [selectedCountry.geometry.coordinates] :
+    //                 selectedCountry.geometry.coordinates;
+
+    //             processCoordinates(coordinates);
+
+    //             countryInfo.north = parseFloat(north.toFixed(2));
+    //             countryInfo.south = parseFloat(south.toFixed(2));
+    //             countryInfo.east = parseFloat(east.toFixed(2));
+    //             countryInfo.west = parseFloat(west.toFixed(2));
+    //             countryInfo.lat = parseFloat(((south) + ((north) - (south)) / 2).toFixed(2))
+    //             countryInfo.lng = parseFloat(((west) + ((east) - (west)) / 2).toFixed(2))
+    //         } else {
+    //             console.error('Selected country not found in GeoJSON data.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error fetching or processing GeoJSON data:', error);
+    //     }
+    // }
 
     async function setBoundingBox() {
         try {
-            const response = await fetch('./resources/countryBorders.geo.json');
-            const geojsonData = await response.json();
-
             const selectedISO_A2 = $('#countrySelect').val();
-            const selectedCountry = geojsonData.features.find(feature => feature.properties.iso_a2 === selectedISO_A2);
-
-            if (selectedCountry) {
+            
+            const result = await $.ajax({
+                url: './libs/php/getGeoJSON.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    selectedISO_A2: selectedISO_A2
+                }
+            });
+    
+            if (result.status === 'success') {
+                const selectedCountry = result.data;
+                
                 let north = -90;
                 let south = 90;
                 let east = -180;
                 let west = 180;
-
                 const processCoordinates = (coordinates) => {
                     coordinates.forEach(polygon => {
                         polygon.forEach(ring => {
@@ -319,13 +435,10 @@ $(document).ready(function() {
                         });
                     });
                 };
-
                 const coordinates = selectedCountry.geometry.type === 'Polygon' ?
                     [selectedCountry.geometry.coordinates] :
                     selectedCountry.geometry.coordinates;
-
                 processCoordinates(coordinates);
-
                 countryInfo.north = parseFloat(north.toFixed(2));
                 countryInfo.south = parseFloat(south.toFixed(2));
                 countryInfo.east = parseFloat(east.toFixed(2));
@@ -333,14 +446,14 @@ $(document).ready(function() {
                 countryInfo.lat = parseFloat(((south) + ((north) - (south)) / 2).toFixed(2))
                 countryInfo.lng = parseFloat(((west) + ((east) - (west)) / 2).toFixed(2))
             } else {
-                console.error('Selected country not found in GeoJSON data.');
+                console.error('Error fetching GeoJSON data:', result.message);
             }
         } catch (error) {
-            console.error('Error fetching or processing GeoJSON data:', error);
+            console.error('Error in setBoundingBox:', error);
         }
     }
-
-    let earthquakeMarkers = L.markerClusterGroup();  // Use marker cluster group instead of layer group
+    
+    let earthquakeMarkers = L.markerClusterGroup();
 
     async function getEarthquakes() {
         try {
@@ -383,7 +496,6 @@ $(document).ready(function() {
             console.error('Error in getEarthquakes:', error);
         }
     }
-    
 
     async function getNews() {
         try {
@@ -582,3 +694,4 @@ $(document).ready(function() {
         }
     })
 });
+
