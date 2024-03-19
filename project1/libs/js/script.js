@@ -407,15 +407,38 @@ $(document).ready(function() {
                 const { lat, lng, magnitude, depth, datetime, eqid } = earthquake;
     
                 const marker = L.ExtraMarkers.icon({
-                    icon: 'fa-number',
+                    prefix: 'fa',
                     markerColor: 'red',
+                    icon: 'fa-house-crack',
                 });
+
+                const earthquakeInfo = `https://earthquake.usgs.gov/earthquakes/eventpage/${eqid}/executive`
+                
+                const newDatetime = new Date(datetime);
+
+                const day = newDatetime.getDate();
+                const suffix = (day === 1 || day === 21 || day === 31) ? 'st' : (day === 2 || day === 22) ? 'nd' : (day === 3 || day === 23) ? 'rd' : 'th';
+                const options = {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                };
+                let date = newDatetime.toLocaleDateString('en-GB', options);
+                date = date.replace(/\b0(\d)\b/g, '$1');
+                date = date.replace(day, day + suffix);
+
+                const timeOptions = {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                };
+                const time = newDatetime.toLocaleTimeString('en-GB', timeOptions);
     
                 const markerInstance = L.marker([lat, lng], { icon: marker })
-                    .bindPopup(`<strong>Earthquake:</strong> ${eqid}<br>
-                                 <strong>Magnitude:</strong> ${magnitude}<br>
-                                 <strong>Depth:</strong> ${depth}<br>
-                                 <strong>Date and Time:</strong> ${datetime}`)
+                    .bindPopup(`<div><strong>An earthquake with magnitude ${magnitude} and depth ${depth} 
+                                occurred here on ${date} at ${time}. Click 
+                                <a href=${earthquakeInfo} target="_blank">here</a> 
+                                to read more</strong></div>`)
                     .addTo(earthquakeMarkers);
             });
 
@@ -441,15 +464,15 @@ $(document).ready(function() {
                 const { latitude, longitude, name, city, country, iata } = airport;
 
                 const marker = L.ExtraMarkers.icon({
-                    icon: 'fa-number',
-                    markerColor: 'orange',
+                    prefix: 'fa',
+                    icon: 'fa-plane',
+                    iconColor: 'black',
+                    markerColor: 'white',
+                    shape: 'square'
                 });
     
                 const markerInstance = L.marker([latitude, longitude], { icon: marker })
-                    .bindPopup(`<strong>Airport Name:</strong> ${name}<br>
-                                <strong>City:</strong> ${city}<br>
-                                <strong>Country:</strong> ${country}<br>
-                                <strong>IATA Code:</strong> ${iata}`)
+                    .bindPopup(`<strong>${name}</strong> <br>`)
                     .addTo(airportMarkers);
             });
     
@@ -476,14 +499,17 @@ $(document).ready(function() {
                 const { latitude, longitude, name, country, population } = city;
 
                 const marker = L.ExtraMarkers.icon({
-                    icon: 'fa-number',
-                    markerColor: 'black',
+                    prefix: 'fa',
+                    icon: 'fa-city',
+                    markerColor: 'green',
+                    shape: 'square'
                 });
 
+                const formattedPopulation = parseFloat(population).toLocaleString('en-US')
+
                 const markerInstance = L.marker([latitude, longitude], { icon: marker })
-                    .bindPopup(`<strong>City Name:</strong> ${name}<br>
-                                <strong>Country:</strong> ${country}<br>
-                                <strong>Population:</strong> ${population}`)
+                    .bindPopup(`<strong>${name}</strong><br>
+                                <strong>${formattedPopulation}</strong>`)
                     .addTo(cityMarkers);
             });
 
