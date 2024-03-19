@@ -471,8 +471,7 @@ $(document).ready(function() {
     async function getEarthquakes() {
         try {
             await Promise.resolve(setBoundingBox());
-    
-            // Clear existing earthquake markers on the map
+
             earthquakeMarkers.clearLayers();
     
             const result = await ajaxRequest("./libs/php/getEarthquakes.php", {
@@ -501,14 +500,46 @@ $(document).ready(function() {
                                  <strong>Date and Time:</strong> ${datetime}`)
                     .addTo(earthquakeMarkers);
             });
-    
-            // Add the earthquakeMarkers (now a cluster group) to the map
+
             map.addLayer(earthquakeMarkers);
     
         } catch (error) {
             console.error('Error in getEarthquakes:', error);
         }
     }
+
+    let airportMarkers = L.markerClusterGroup();
+
+    async function getAirports() {
+        try {
+            const result = await ajaxRequest("./libs/php/getAirports.php", {
+                data: $('#countrySelect').val()
+            });
+            
+            // Clear existing airport markers
+            airportMarkers.clearLayers();
+    
+            // Loop through each airport in the result and create a marker
+            result.forEach(airport => {
+                const { latitude, longitude, name, city, country, iata } = airport;
+    
+                // Create a marker for each airport
+                const marker = L.marker([latitude, longitude])
+                    .bindPopup(`<strong>Airport Name:</strong> ${name}<br>
+                                <strong>City:</strong> ${city}<br>
+                                <strong>Country:</strong> ${country}<br>
+                                <strong>IATA Code:</strong> ${iata}`)
+                    .addTo(airportMarkers);
+            });
+    
+            // Add airport markers to the map
+            map.addLayer(airportMarkers);
+    
+        } catch (error) {
+            console.error('Error in getAirports:', error);
+        }
+    }
+    
 
     async function getNews() {
         try {
@@ -658,6 +689,7 @@ $(document).ready(function() {
                 getWeather(),
                 getWiki(),
                 getEarthquakes(),
+                getAirports(),
                 // getNews() // Limited credits on API call so keep commented out during testing, need to fix error handling for failed calls
             ]);
 
