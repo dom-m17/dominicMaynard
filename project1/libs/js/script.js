@@ -248,9 +248,22 @@ $(document).ready(function() {
         sunrise: "",
         sunset: "",
         today: new Date().toISOString().slice(0, 10),
-        newsTitle: "",
-        newsAuthor: "",
-        newsUrl: ""
+        news1Title: "",
+        news1Author: "",
+        news1Url: "",
+        news1ImageUrl: "",
+        news2Title: "",
+        news2Author: "",
+        news2Url: "",
+        news2ImageUrl: "",
+        news3Title: "",
+        news3Author: "",
+        news3Url: "",
+        news3ImageUrl: "",
+        news4Title: "",
+        news4Author: "",
+        news4Url: "",
+        news4ImageUrl: "",
     }
 
     // The following functions are responsible for making ajax requests
@@ -503,13 +516,28 @@ $(document).ready(function() {
             const modifiedCountryName = countryInfo.name.replace(/\s/g, '%20');
             const result = await ajaxRequest("./libs/php/getNews.php", {
                 data: {
-                    countryName: modifiedCountryName,
-                    today: countryInfo.today
+                    countryName: modifiedCountryName
                 }
             });
-            countryInfo["newsTitle"] = result["articles"][0]["title"];
-            countryInfo["newsAuthor"] = result["articles"][0]["author"];
-            countryInfo["newsUrl"] = result["articles"][0]["url"];
+            countryInfo["news1Title"] = result["results"][0]["title"];
+            countryInfo["news1Author"] = result["results"][0]["creator"];
+            countryInfo["news1Url"] = result["results"][0]["source_url"];
+            countryInfo["news1ImageUrl"] = result["results"][0]["image_url"];
+
+            countryInfo["news2Title"] = result["results"][1]["title"];
+            countryInfo["news2Author"] = result["results"][1]["creator"];
+            countryInfo["news2Url"] = result["results"][1]["source_url"];
+            countryInfo["news2ImageUrl"] = result["results"][1]["image_url"];
+            
+            countryInfo["news3Title"] = result["results"][2]["title"];
+            countryInfo["news3Author"] = result["results"][2]["creator"];
+            countryInfo["news3Url"] = result["results"][2]["source_url"];
+            countryInfo["news3ImageUrl"] = result["results"][2]["image_url"];
+            
+            countryInfo["news4Title"] = result["results"][3]["title"];
+            countryInfo["news4Author"] = result["results"][3]["creator"];
+            countryInfo["news4Url"] = result["results"][3]["source_url"];
+            countryInfo["news4ImageUrl"] = result["results"][3]["image_url"];
         } catch (error) {
             console.error('Error in getNews:', error);
         }
@@ -630,10 +658,8 @@ $(document).ready(function() {
                 getWeather(),
                 getWiki(),
                 getEarthquakes(),
-                getNews()
+                // getNews() // Limited credits on API call so keep commented out during testing, need to fix error handling for failed calls
             ]);
-
-            // console.log(countryInfo)
 
             setFlag();
 
@@ -652,9 +678,18 @@ $(document).ready(function() {
             $('#timezoneId').html(countryInfo["timezoneId"]);
             $('#sunrise').html(countryInfo["sunrise"]);
             $('#sunset').html(countryInfo["sunset"]);
-            $('#news-title').html(countryInfo["newsTitle"]);
-            $('#news-author').html(countryInfo["newsAuthor"]);
-            $('#news-url').html(`<a href="${countryInfo["newsUrl"]}" target="_blank">${countryInfo["newsUrl"]}</a>`);
+            $('#news-article-1-author').html(countryInfo["news1Author"]);
+            $('#news-article-1-image').attr('src', countryInfo["news1ImageUrl"]);;
+            $('#news-article-1-title').html(`<a href="${countryInfo["news1Url"]}" target="_blank">${countryInfo["news1Title"]}</a>`);
+            $('#news-article-2-author').html(countryInfo["news2Author"]);
+            $('#news-article-2-image').attr('src', countryInfo["news2ImageUrl"]);;
+            $('#news-article-2-title').html(`<a href="${countryInfo["news2Url"]}" target="_blank">${countryInfo["news2Title"]}</a>`);
+            $('#news-article-3-author').html(countryInfo["news3Author"]);
+            $('#news-article-3-image').attr('src', countryInfo["news3ImageUrl"]);;
+            $('#news-article-3-title').html(`<a href="${countryInfo["news3Url"]}" target="_blank">${countryInfo["news3Title"]}</a>`);
+            $('#news-article-4-author').html(countryInfo["news4Author"]);
+            $('#news-article-4-image').attr('src', countryInfo["news4ImageUrl"]);;
+            $('#news-article-4-title').html(`<a href="${countryInfo["news4Url"]}" target="_blank">${countryInfo["news4Title"]}</a>`);
             if (countryInfo["language2"]) {
                 $('#language').append('<br>' + countryInfo["language2"]);
             }
