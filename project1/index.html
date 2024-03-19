@@ -134,45 +134,32 @@
             </div>
             <div class="modal-body">
               <table class="table table-striped">
-                <tr>
-      
-                  <td>
-                    Currency
-                  </td>
-      
-                  <td id="currency">
-                    
-                  </td>
-      
-                </tr>
   
                 <tr>
       
-                  <td>
-                    Exchange Rate (Against USD)
-                  </td>
-      
-                  <td id="exchange-rate">
-                    
+                  <td id="currency-dollar">
+
+                    <input id="dollar-amount" style="text-align: right;"/>
+
+                      <div id="converter">
+                          <label for="dollar-amount" style="text-align: right;">US Dollars</label>
+                      </div>
+
                   </td>
       
                 </tr>
-  
+
                 <tr>
       
-                  <td>
-                    Converter
-                  </td>
-      
-                  <td id="converter">
-                    <div>
-                        <input id="dollar-amount" />
-                        <label for="dollar-amount">Dollars</label>
+                  <td id="currency-converted">
+
+                    <input type="text" readonly id="converted-total" style="text-align: right;"></div>
+
+                    <div id="currency" style="text-align: right;">
                     </div>
-                    <div>=</div>
-                    <div id="converted-total"></div>
-                </td>
-      
+
+                  </td>
+
                 </tr>
                       
               </table>

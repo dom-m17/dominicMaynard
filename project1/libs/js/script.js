@@ -668,7 +668,6 @@ $(document).ready(function() {
             $('#land-area').html(countryInfo["landArea"]);
             $('#population').html(countryInfo["population"]);
             $('#currency').html(countryInfo["currency"]);
-            $('#exchange-rate').html(countryInfo["exchangeRate"]);
             $('#temperature').html(countryInfo["temperature"]);
             $('#feels-like').html(countryInfo["feelsLike"]);
             $('#humidity').html(countryInfo["humidity"]);
@@ -699,8 +698,8 @@ $(document).ready(function() {
             $('#summary').html(countryInfo["summary"]);
 
             if ($('#dollar-amount').val()) {
-                const convertedTotal = $('#dollar-amount').val() * countryInfo.exchangeRate
-                $('#converted-total').html((convertedTotal).toLocaleString('en-US') + " " + countryInfo.currency);
+                const convertedTotal = ($('#dollar-amount').val() * countryInfo.exchangeRate).toFixed(2);
+                $('#converted-total').val(parseFloat(convertedTotal).toLocaleString('en-US'));
             }
 
             const wikiUrl = countryInfo["wikiUrl"];
@@ -721,8 +720,8 @@ $(document).ready(function() {
 
     $('#dollar-amount').on('input', async function() {
         try {
-            const convertedTotal = $('#dollar-amount').val() * countryInfo.exchangeRate
-            $('#converted-total').html(parseInt(convertedTotal, 10).toLocaleString('en-US') + " " + countryInfo.currency);
+            const convertedTotal = ($('#dollar-amount').val() * countryInfo.exchangeRate).toFixed(2);
+            $('#converted-total').val(parseFloat(convertedTotal).toLocaleString('en-US'));
         } catch (error) {
             console.error('Error in converted total:', error);
         }
