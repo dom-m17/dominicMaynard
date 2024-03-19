@@ -5,8 +5,6 @@ const map = L.map('map', {
     // zoomControl: false
 });
 
-// map.zoomControl.setPosition('bottomright');
-
 // Setting options for layers for user to choose
 const standard = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -178,8 +176,6 @@ $('#countrySelect').on('change', async function() {
             console.error('Error fetching GeoJSON data:', error);
     }
 });
-
-// $('#countrySelect').on('change', async function() {
 //     const selectedISO_A2 = $(this).val();
 //     const highlightStyle = {
 //         weight: 2,
@@ -315,30 +311,6 @@ $(document).ready(function() {
         }
     }
 
-
-    // This needs to be a PHP routine
-    // async function setParams() {
-    //     const selectedISO_A2 = $('#countrySelect').val();
-
-    //     return fetch('./resources/countryBorders.geo.json')
-    //         .then(response => {
-    //             if (!response.ok) {
-    //                 throw new Error(`HTTP error! Status: ${response.status}`);
-    //             }
-    //             return response.json();
-    //         })
-    //         .then(data => {
-    //             const selectedCountry = data.features.find(feature => feature.properties.iso_a2 === selectedISO_A2);
-    //             countryInfo["iso_a2"] = selectedCountry.properties.iso_a2;
-    //             countryInfo["iso_a3"] = selectedCountry.properties.iso_a3;
-    //             countryInfo["name"] = selectedCountry.properties.name;
-    //         })
-    //         .catch(error => {
-    //             console.error('Error fetching JSON:', error);
-    //             throw error;
-    //         });
-    // }
-
     async function setParams() {
         const selectedISO_A2 = $('#countrySelect').val();
     
@@ -358,58 +330,6 @@ $(document).ready(function() {
             throw error;
         }
     }
-
-    // async function setBoundingBox() {
-    //     try {
-    //         const response = await fetch('./resources/countryBorders.geo.json');
-    //         const geojsonData = await response.json();
-
-    //         const selectedISO_A2 = $('#countrySelect').val();
-    //         const selectedCountry = geojsonData.features.find(feature => feature.properties.iso_a2 === selectedISO_A2);
-
-    //         if (selectedCountry) {
-    //             let north = -90;
-    //             let south = 90;
-    //             let east = -180;
-    //             let west = 180;
-
-    //             const processCoordinates = (coordinates) => {
-    //                 coordinates.forEach(polygon => {
-    //                     polygon.forEach(ring => {
-    //                         ring.forEach(coord => {
-    //                             if (Array.isArray(coord) && coord.length === 2) {
-    //                                 const [longitude, latitude] = coord;
-    //                                 north = Math.max(north, latitude);
-    //                                 south = Math.min(south, latitude);
-    //                                 east = Math.max(east, longitude);
-    //                                 west = Math.min(west, longitude);
-    //                             } else {
-    //                                 console.warn('Invalid coordinate:', coord);
-    //                             }
-    //                         });
-    //                     });
-    //                 });
-    //             };
-
-    //             const coordinates = selectedCountry.geometry.type === 'Polygon' ?
-    //                 [selectedCountry.geometry.coordinates] :
-    //                 selectedCountry.geometry.coordinates;
-
-    //             processCoordinates(coordinates);
-
-    //             countryInfo.north = parseFloat(north.toFixed(2));
-    //             countryInfo.south = parseFloat(south.toFixed(2));
-    //             countryInfo.east = parseFloat(east.toFixed(2));
-    //             countryInfo.west = parseFloat(west.toFixed(2));
-    //             countryInfo.lat = parseFloat(((south) + ((north) - (south)) / 2).toFixed(2))
-    //             countryInfo.lng = parseFloat(((west) + ((east) - (west)) / 2).toFixed(2))
-    //         } else {
-    //             console.error('Selected country not found in GeoJSON data.');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error fetching or processing GeoJSON data:', error);
-    //     }
-    // }
 
     async function setBoundingBox() {
         try {
@@ -483,11 +403,9 @@ $(document).ready(function() {
                 }
             });
     
-            // Loop through each earthquake in the result and create a marker
             result.earthquakes.forEach(earthquake => {
                 const { lat, lng, magnitude, depth, datetime, eqid } = earthquake;
     
-                // Use Leaflet Extra Markers for styling
                 const marker = L.ExtraMarkers.icon({
                     icon: 'fa-number',
                     markerColor: 'red',
@@ -511,20 +429,23 @@ $(document).ready(function() {
     let airportMarkers = L.markerClusterGroup();
 
     async function getAirports() {
+
+        airportMarkers.clearLayers();
+
         try {
             const result = await ajaxRequest("./libs/php/getAirports.php", {
                 data: $('#countrySelect').val()
             });
-            
-            // Clear existing airport markers
-            airportMarkers.clearLayers();
     
-            // Loop through each airport in the result and create a marker
             result.forEach(airport => {
                 const { latitude, longitude, name, city, country, iata } = airport;
+
+                const marker = L.ExtraMarkers.icon({
+                    icon: 'fa-number',
+                    markerColor: 'orange',
+                });
     
-                // Create a marker for each airport
-                const marker = L.marker([latitude, longitude])
+                const markerInstance = L.marker([latitude, longitude], { icon: marker })
                     .bindPopup(`<strong>Airport Name:</strong> ${name}<br>
                                 <strong>City:</strong> ${city}<br>
                                 <strong>Country:</strong> ${country}<br>
@@ -539,7 +460,39 @@ $(document).ready(function() {
             console.error('Error in getAirports:', error);
         }
     }
-    
+
+    let cityMarkers = L.markerClusterGroup();
+
+    async function getCities() {
+
+        cityMarkers.clearLayers();
+
+        try {
+            const result = await ajaxRequest("./libs/php/getCities.php", {
+                data: $('#countrySelect').val()
+            });
+
+            result.forEach(city => {
+                const { latitude, longitude, name, country, population } = city;
+
+                const marker = L.ExtraMarkers.icon({
+                    icon: 'fa-number',
+                    markerColor: 'black',
+                });
+
+                const markerInstance = L.marker([latitude, longitude], { icon: marker })
+                    .bindPopup(`<strong>City Name:</strong> ${name}<br>
+                                <strong>Country:</strong> ${country}<br>
+                                <strong>Population:</strong> ${population}`)
+                    .addTo(cityMarkers);
+            });
+
+            map.addLayer(cityMarkers);
+
+        } catch (error) {
+            console.error('Error in getCities:', error);
+        }
+    }
 
     async function getNews() {
         try {
@@ -690,6 +643,7 @@ $(document).ready(function() {
                 getWiki(),
                 getEarthquakes(),
                 getAirports(),
+                getCities(),
                 // getNews() // Limited credits on API call so keep commented out during testing, need to fix error handling for failed calls
             ]);
 
