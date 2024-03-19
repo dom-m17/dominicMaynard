@@ -520,7 +520,6 @@ $(document).ready(function() {
             const result = await ajaxRequest("./libs/php/getCountryInfo.php", {
                 data: $('#countrySelect').val()
             });
-            console.log(result)
             const areaData = parseInt(result["areaInSqKm"], 10).toLocaleString('en-US');
             countryInfo["landArea"] = areaData;
             const populationData = parseInt(result["population"], 10).toLocaleString('en-US');
