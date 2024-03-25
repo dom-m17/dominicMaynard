@@ -234,6 +234,8 @@ $(document).ready(function() {
         language3: "",
         summary: "",
         wikiUrl: "",
+        wikiImage: "",
+        wikiTitle: "",
         north: 0,
         south: 0,
         east: 0,
@@ -614,11 +616,12 @@ $(document).ready(function() {
             const result = await ajaxRequest("./libs/php/getWeather.php", {
                 data: encodedCity
             });
-            countryInfo["temperature"] = (result["main"]["temp"] - 273.15).toFixed(2) + "°C";
-            countryInfo["feelsLike"] = (result["main"]["feels_like"] - 273.15).toFixed(2) + "°C";
+            console.log(result)
+            countryInfo["temperature"] = (result["main"]["temp"] - 273.15).toFixed(0) + "°C";
+            countryInfo["feelsLike"] = (result["main"]["feels_like"] - 273.15).toFixed(0) + "°C";
             countryInfo["humidity"] = result["main"]["humidity"] + "%";
             countryInfo["windSpeed"] = (result["wind"]["speed"]).toFixed(0) + "mph";
-            countryInfo["weatherDescription"] = result["weather"]["0"]["description"];
+            countryInfo["weatherDescription"] = result["weather"]["0"]["main"];
         } catch (error) {
             console.error('Error in getWeather:', error);
         }
@@ -635,8 +638,11 @@ $(document).ready(function() {
                     west: countryInfo.west,
                 }
             });
+            console.log(result)
             countryInfo["summary"] = result['geonames']['0']["summary"];
             countryInfo["wikiUrl"] = result['geonames']['0']["wikipediaUrl"];
+            countryInfo["wikiImage"] = result['geonames']['0']["thumbnailImg"];
+            countryInfo["wikiTitle"] = result['geonames']['0']["title"];
         } catch (error) {
             console.error('Error in getWiki:', error);
         }
@@ -685,10 +691,9 @@ $(document).ready(function() {
             $('#humidity').html(countryInfo["humidity"]);
             $('#weather-description').html(countryInfo["weatherDescription"]);
             $('#wind-speed').html(countryInfo["windSpeed"]);
+            $('#weather-title').html(`${countryInfo["capitalCity"]}, ${countryInfo["name"]}`);
             $('#language').html(countryInfo["language"]);
             $('#timezoneId').html(countryInfo["timezoneId"]);
-            $('#sunrise').html(countryInfo["sunrise"]);
-            $('#sunset').html(countryInfo["sunset"]);
             $('#news-article-1-author').html(countryInfo["news1Author"]);
             $('#news-article-1-image').attr('src', countryInfo["news1ImageUrl"]);;
             $('#news-article-1-title').html(`<a href="${countryInfo["news1Url"]}" target="_blank">${countryInfo["news1Title"]}</a>`);
@@ -707,7 +712,6 @@ $(document).ready(function() {
             if (countryInfo["language3"]) {
                 $('#language').append('<br>' + countryInfo["language3"]);
             }
-            $('#summary').html(countryInfo["summary"]);
 
             if ($('#dollar-amount').val()) {
                 const convertedTotal = ($('#dollar-amount').val() * countryInfo.exchangeRate).toFixed(2);
@@ -718,9 +722,11 @@ $(document).ready(function() {
             if (wikiUrl) {
                 const absoluteUrl = wikiUrl.startsWith('http') ? wikiUrl : `http://${wikiUrl}`;
                 const linkElement = `<a href="${absoluteUrl}" target="_blank">Read More</a>`;
-                $('#wiki-url').html(linkElement);
+                $('#wiki-summary').html(`${countryInfo["summary"]} ${linkElement}`);
+                $('#wiki-img').attr('src', countryInfo["wikiImage"])
+                $('#wiki-title').html(countryInfo["wikiTitle"])
             } else {
-                $('#wiki-url').html("No Wikipedia link available");
+                $('#wiki-summary').html("No Wikipedia link available");
             }
         } catch (error) {
             console.error('An error occurred:', error);

@@ -29,8 +29,6 @@
       </div>
       <div id="map"></div>
   
-      
-  
       <!-- INFORMATION MENU -->
   
       <div id="info-modal" class="modal" data-bs-backdrop="false" tabindex="-1">
@@ -168,9 +166,8 @@
               <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
-        </div>
-      </div>
-  
+      </div></div> <!-- Weird issue with this extra closing div tag that when taken away means all below modals arent seen -->
+
       <!-- WIKI MENU -->
   
       <div id="wiki-modal" class="modal" data-bs-backdrop="false" tabindex="-1">
@@ -183,26 +180,21 @@
             <div class="modal-body">
               <table class="table table-striped">
                 <tr>
-      
+                  <h3 id="wiki-title"></h3>
+                </tr>
+                
+                <tr>
+
                   <td>
-                    Summary
+                    <img id="wiki-img" />
                   </td>
       
-                  <td id="summary">
-                    
+                  <td id="wiki-summary">
                   </td>
       
                 </tr>
   
                 <tr>
-      
-                  <td>
-                    Wiki URL
-                  </td>
-      
-                  <td id="wiki-url">
-                    
-                  </td>
       
                 </tr>
                       
@@ -221,11 +213,53 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
           <div class="modal-content shadow">
             <div class="modal-header bg-success bg-gradient text-white">
-              <h5 class="modal-title">Current Weather Information</h5>
+              <h5 class="modal-title" id="weather-title">Current Weather Information</h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <table class="table table-striped">
+
+              <div class="modal-body">
+        
+                <div id="pre-load"></div>
+        
+                <div class="row">
+        
+                  <div class="col border m-2">
+        
+                    <p class="fw-bold fs-5 mt-1">Today</p>
+                    
+                    <div class="row">
+                      
+                      <div class="col text-center m-3">
+                        
+                        <p id="weather-description" class="fw-bold fs-6"></p>
+                          
+                      </div>
+                      
+                      <div class="col text-center">
+                        
+                        <img id="todayIcon" class="img-fluid mt-0" src="" alt="" title="">
+                          
+                      </div>              
+        
+                      <div class="col text-center">
+                          
+                      </div>              
+                      
+                    </div>
+        
+                  </div>   
+        
+                </div>
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+              <!-- <table class="table table-striped">
                 <tr>
       
                   <td>
@@ -286,14 +320,8 @@
       
                 </tr>
                       
-              </table>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
-            </div>
-          </div>
+              </table> -->
         </div>
-      </div>
   
       <!-- NEWS MENU -->
   
@@ -433,8 +461,6 @@
           </div>
         </div>
       </div>
-
-    </div>
 
   </body>
 
