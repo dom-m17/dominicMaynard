@@ -67,6 +67,11 @@ body, html {
     top: 14.5rem;
 }
 
+.leaflet-control.calendar-position {
+    position: absolute;
+    top: 17rem;
+}
+
 .btn-close {
     min-height: 1.5rem;
     min-width: 1.5rem;

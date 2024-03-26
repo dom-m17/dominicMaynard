@@ -63,6 +63,7 @@ createCustomButton("pound", "economic-modal", "economic-position", map);
 createCustomButton("wiki", "wiki-modal", "wiki-position", map);
 createCustomButton("cloud", "weather-modal", "weather-position", map);
 createCustomButton("news", "news-modal", "news-position", map);
+createCustomButton("calendar", "calendar-modal", "calendar-position", map);
 
 $('.btn-close').on('click', function() {
     $(".modal").modal("hide");
@@ -555,6 +556,17 @@ $(document).ready(function() {
         }
     }
 
+    async function getHolidays() {
+        try {
+            const result = await ajaxRequest("./libs/php/getHolidays.php", {
+                data: $('#countrySelect').val()
+            });
+            console.log(result)
+        } catch (error) {
+            console.error('Error in getHolidays:', error);
+        }
+    }
+
     async function getCountryInfo() {
         try {
             const result = await ajaxRequest("./libs/php/getCountryInfo.php", {
@@ -676,6 +688,7 @@ $(document).ready(function() {
                 getEarthquakes(),
                 getAirports(),
                 getCities(),
+                getHolidays(),
                 // getNews() // Limited credits on API call so keep commented out during testing, need to fix error handling for failed calls
             ]);
 
