@@ -1,7 +1,9 @@
 <?php
     $executionStartTime = microtime(true);
 
-    $url = 'http://api.geonames.org/wikipediaBoundingBoxJSON?north=' . $_REQUEST['data']['north'] . '&south=' . $_REQUEST['data']['south'] . '&east=' . $_REQUEST['data']['east'] . '&west=' . $_REQUEST['data']['west'] . '&username=' . 'dom_m17';    
+    $url = 'http://api.geonames.org/wikipediaBoundingBoxJSON?north=' . $_REQUEST['data']['north'] . '&south=' . $_REQUEST['data']['south'] . '&east=' . $_REQUEST['data']['east'] . '&west=' . $_REQUEST['data']['west'] . '&maxRows=3&username=' . 'dom_m17';
+    // $url = 'http://api.geonames.org/wikipediaSearchJSON?q=' . $_REQUEST['data']['encodedCountry'] . '&maxRows=3&username=' . 'dom_m17'; // Cant get results for UK to work consistently using this endpoint   
+
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

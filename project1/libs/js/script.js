@@ -574,7 +574,6 @@ $(document).ready(function() {
                 const [year, month, day] = dateString.split('-');
                 return `${day}-${month}-${year}`;
             }
-            console.log(result)
             if (result && result.length > 0) {
                 const tableBody = $('#holiday-table tbody');
                 const addedDates = new Set();
@@ -724,10 +723,10 @@ $(document).ready(function() {
                 getAirports(),
                 getCities(),
                 getHolidays(),
+                setFlag(),
                 // getNews() // Call is no longer returning results // Limited credits on API call so keep commented out during testing, need to fix error handling for failed calls
             ]);
 
-            setFlag();
             console.log(countryInfo)
 
             $('#continent').html(countryInfo["continent"]);

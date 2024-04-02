@@ -151,7 +151,7 @@
       
                   <td id="currency-converted">
 
-                    <input type="text" readonly id="converted-total" style="text-align: right;"></div>
+                    <input type="text" readonly id="converted-total" style="text-align: right; background-color: lightgray;">
 
                     <div id="currency" style="text-align: right;">
                     </div>
@@ -166,7 +166,8 @@
               <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
-      </div></div> <!-- Weird issue with this extra closing div tag that when taken away means all below modals arent seen -->
+      </div>
+    </div>
 
       <!-- WIKI MENU -->
   
@@ -258,7 +259,7 @@
         
                   <div class="col border m-2">
         
-                    <p class="fw-bold fs-5 mt-1">Today</p>
+                    <p class="fw-bold fs-5 mt-1">Today - At a glance:</p>
                     
                     <div class="row">
                       
@@ -270,8 +271,42 @@
                       
                       <div class="col text-center">
                         
-                        <img id="todayIcon" class="img-fluid mt-0" src="" alt="" title="">
+                        <p id="wind-speed" class="fw-bold fs-6"></p>
+                        <p id="feels-like" class="fw-bold fs-6"></p>
+                        <p id="temperature" class="fw-bold fs-6"></p>
+
+                      </div>              
+        
+                      <div class="col text-center">
                           
+                      </div>              
+                      
+                    </div>
+        
+                  </div>   
+        
+                </div>
+
+                <div class="row">
+        
+                  <div class="col border m-2">
+        
+                    <p class="fw-bold fs-5 mt-1">Today - In detail:</p>
+                    
+                    <div class="row">
+                      
+                      <div class="col text-center m-3">
+                        
+                        <p id="weather-description" class="fw-bold fs-6"></p>
+                          
+                      </div>
+                      
+                      <div class="col text-center">
+                        
+                        <p id="wind-speed" class="fw-bold fs-6"></p>
+                        <p id="feels-like" class="fw-bold fs-6"></p>
+                        <p id="temperature" class="fw-bold fs-6"></p>
+
                       </div>              
         
                       <div class="col text-center">
@@ -521,6 +556,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
 
   </body>
