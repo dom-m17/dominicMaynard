@@ -67,7 +67,7 @@ body, html {
     top: 14.5rem;
 }
 
-.leaflet-control.calendar-position {
+.leaflet-control.holiday-position {
     position: absolute;
     top: 17rem;
 }

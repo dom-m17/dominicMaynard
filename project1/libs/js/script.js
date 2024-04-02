@@ -63,7 +63,7 @@ createCustomButton("pound", "economic-modal", "economic-position", map);
 createCustomButton("wiki", "wiki-modal", "wiki-position", map);
 createCustomButton("cloud", "weather-modal", "weather-position", map);
 createCustomButton("news", "news-modal", "news-position", map);
-createCustomButton("calendar", "calendar-modal", "calendar-position", map);
+createCustomButton("calendar", "holiday-modal", "holiday-position", map);
 
 $('.btn-close').on('click', function() {
     $(".modal").modal("hide");
@@ -237,6 +237,14 @@ $(document).ready(function() {
         wikiUrl: "",
         wikiImage: "",
         wikiTitle: "",
+        summary2: "",
+        wikiUrl2: "",
+        wikiImage2: "",
+        wikiTitle2: "",
+        summary3: "",
+        wikiUrl3: "",
+        wikiImage3: "",
+        wikiTitle3: "",
         north: 0,
         south: 0,
         east: 0,
@@ -532,6 +540,7 @@ $(document).ready(function() {
                     countryName: modifiedCountryName
                 }
             });
+            console.log(result)
             countryInfo["news1Title"] = result["results"][0]["title"];
             countryInfo["news1Author"] = result["results"][0]["creator"];
             countryInfo["news1Url"] = result["results"][0]["source_url"];
@@ -561,7 +570,26 @@ $(document).ready(function() {
             const result = await ajaxRequest("./libs/php/getHolidays.php", {
                 data: $('#countrySelect').val()
             });
+            function formatDate(dateString) {
+                const [year, month, day] = dateString.split('-');
+                return `${day}-${month}-${year}`;
+            }
             console.log(result)
+            if (result && result.length > 0) {
+                const tableBody = $('#holiday-table tbody');
+                const addedDates = new Set();
+                tableBody.empty();
+                result.forEach(holiday => {
+                    if (!addedDates.has(holiday.date)) {
+                        const formattedDate = formatDate(holiday.date);
+                        const row = $('<tr>');
+                        row.append($('<td>').text(holiday.name));
+                        row.append($('<td>').text(formattedDate));
+                        tableBody.append(row);
+                        addedDates.add(holiday.date);
+                    }
+                });
+            }
         } catch (error) {
             console.error('Error in getHolidays:', error);
         }
@@ -650,11 +678,18 @@ $(document).ready(function() {
                     west: countryInfo.west,
                 }
             });
-            console.log(result)
             countryInfo["summary"] = result['geonames']['0']["summary"];
             countryInfo["wikiUrl"] = result['geonames']['0']["wikipediaUrl"];
             countryInfo["wikiImage"] = result['geonames']['0']["thumbnailImg"];
             countryInfo["wikiTitle"] = result['geonames']['0']["title"];
+            countryInfo["summary2"] = result['geonames']['1']["summary"];
+            countryInfo["wikiUrl2"] = result['geonames']['1']["wikipediaUrl"];
+            countryInfo["wikiImage2"] = result['geonames']['1']["thumbnailImg"];
+            countryInfo["wikiTitle2"] = result['geonames']['1']["title"];
+            countryInfo["summary3"] = result['geonames']['2']["summary"];
+            countryInfo["wikiUrl3"] = result['geonames']['2']["wikipediaUrl"];
+            countryInfo["wikiImage3"] = result['geonames']['2']["thumbnailImg"];
+            countryInfo["wikiTitle3"] = result['geonames']['2']["title"];
         } catch (error) {
             console.error('Error in getWiki:', error);
         }
@@ -689,10 +724,11 @@ $(document).ready(function() {
                 getAirports(),
                 getCities(),
                 getHolidays(),
-                // getNews() // Limited credits on API call so keep commented out during testing, need to fix error handling for failed calls
+                // getNews() // Call is no longer returning results // Limited credits on API call so keep commented out during testing, need to fix error handling for failed calls
             ]);
 
             setFlag();
+            console.log(countryInfo)
 
             $('#continent').html(countryInfo["continent"]);
             $('#capital-city').html(countryInfo["capitalCity"]);
@@ -738,6 +774,26 @@ $(document).ready(function() {
                 $('#wiki-summary').html(`${countryInfo["summary"]} ${linkElement}`);
                 $('#wiki-img').attr('src', countryInfo["wikiImage"])
                 $('#wiki-title').html(countryInfo["wikiTitle"])
+            } else {
+                $('#wiki-summary').html("No Wikipedia link available");
+            }
+            const wikiUrl2 = countryInfo["wikiUrl2"];
+            if (wikiUrl2) {
+                const absoluteUrl = wikiUrl2.startsWith('http') ? wikiUrl2 : `http://${wikiUrl2}`;
+                const linkElement = `<a href="${absoluteUrl}" target="_blank">Read More</a>`;
+                $('#wiki-summary-2').html(`${countryInfo["summary2"]} ${linkElement}`);
+                $('#wiki-img-2').attr('src', countryInfo["wikiImage2"])
+                $('#wiki-title-2').html(countryInfo["wikiTitle2"])
+            } else {
+                $('#wiki-summary').html("No Wikipedia link available");
+            }
+            const wikiUrl3 = countryInfo["wikiUrl3"];
+            if (wikiUrl3) {
+                const absoluteUrl = wikiUrl3.startsWith('http') ? wikiUrl3 : `http://${wikiUrl3}`;
+                const linkElement = `<a href="${absoluteUrl}" target="_blank">Read More</a>`;
+                $('#wiki-summary-3').html(`${countryInfo["summary3"]} ${linkElement}`);
+                $('#wiki-img-3').attr('src', countryInfo["wikiImage3"])
+                $('#wiki-title-3').html(countryInfo["wikiTitle3"])
             } else {
                 $('#wiki-summary').html("No Wikipedia link available");
             }
