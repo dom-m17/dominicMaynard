@@ -2,7 +2,7 @@
     $executionStartTime = microtime(true);
 
     $url = "http://api.openweathermap.org/data/2.5/weather?q=" . $_REQUEST["data"] . "&appid=" . "35942d8d5701a5f9be6ebbebc92bd9a2";
-    // $url = "http://api.weatherapi.com/v1/forecast.json?q=" . $_REQUEST["data"] . "&days=3&key=" . "62089aef46b547949f1131959240204"; // This endpoint returns better results but is not working
+    // $url = "http://api.weatherapi.com/v1/current.json?q=" . $_REQUEST["data"] . "&dt=2024-04-03&days=3&key=" . "62089aef46b547949f1131959240204"; // This endpoint returns better results but is not working
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

@@ -230,6 +230,7 @@ $(document).ready(function() {
         humidity: 0,
         weatherDescription: "",
         windSpeed: 0,
+        weatherIconUrl: "",
         language: "",
         language2: "",
         language3: "",
@@ -661,6 +662,7 @@ $(document).ready(function() {
             countryInfo["humidity"] = result["main"]["humidity"] + "%";
             countryInfo["windSpeed"] = (result["wind"]["speed"]).toFixed(0) + "mph";
             countryInfo["weatherDescription"] = result["weather"]["0"]["main"];
+            countryInfo["weatherIconUrl"] = `https://openweathermap.org/img/wn/${result["weather"]["0"]["icon"]}@2x.png`;
         } catch (error) {
             console.error('Error in getWeather:', error);
         }
@@ -735,11 +737,11 @@ $(document).ready(function() {
             $('#population').html(countryInfo["population"]);
             $('#currency').html(countryInfo["currency"]);
             $('#temperature').html(countryInfo["temperature"]);
-            $('#feels-like').html(countryInfo["feelsLike"]);
-            $('#humidity').html(countryInfo["humidity"]);
-            $('#weather-description').html(countryInfo["weatherDescription"]);
-            $('#wind-speed').html(countryInfo["windSpeed"]);
+            $('#feels-like').html(`Feels like: ${countryInfo["feelsLike"]}`);
+            $('#humidity').html(`Humidity: ${countryInfo["humidity"]}`);
+            $('#wind-speed').html(`Wind: ${countryInfo["windSpeed"]}`);
             $('#weather-title').html(`${countryInfo["capitalCity"]}, ${countryInfo["name"]}`);
+            $('#weather-img').attr('src', countryInfo['weatherIconUrl'])
             $('#language').html(countryInfo["language"]);
             $('#timezoneId').html(countryInfo["timezoneId"]);
             $('#news-article-1-author').html(countryInfo["news1Author"]);

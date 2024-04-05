@@ -9,6 +9,10 @@ body, html {
     z-index: 10;
 }
 
+#weather-img {
+    min-width: 70%;
+}
+
 .leaflet-control-zoom {
     border: none;
     box-shadow: none;
