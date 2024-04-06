@@ -1,8 +1,8 @@
 <?php
     $executionStartTime = microtime(true);
 
-    $url = 'https://newsdata.io/api/1/news?apikey=' . 'pub_40331e3cac4871f662972b1d040fd43245acc' . '&q=' . $_REQUEST['data']['countryName'] . 'language=en';
-
+    $url = 'https://newsdata.io/api/1/news?apikey=' . 'pub_40331e3cac4871f662972b1d040fd43245acc' . '&q=' . $_REQUEST['data']['countryName'] . '&category=top&language=en';
+    // $url = 'https://newsapi.org/v2/everything?q=' . $_REQUEST['data']['countryName'] . '&apiKey=' . '7997c24132174821801bec6bc397bf66'
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

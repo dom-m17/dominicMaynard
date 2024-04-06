@@ -13,6 +13,10 @@ body, html {
     min-width: 70%;
 }
 
+#feels-like {
+    padding-top: 4rem;
+}
+
 .leaflet-control-zoom {
     border: none;
     box-shadow: none;

@@ -541,7 +541,6 @@ $(document).ready(function() {
                     countryName: modifiedCountryName
                 }
             });
-            console.log(result)
             countryInfo["news1Title"] = result["results"][0]["title"];
             countryInfo["news1Author"] = result["results"][0]["creator"];
             countryInfo["news1Url"] = result["results"][0]["source_url"];
@@ -557,10 +556,10 @@ $(document).ready(function() {
             countryInfo["news3Url"] = result["results"][2]["source_url"];
             countryInfo["news3ImageUrl"] = result["results"][2]["image_url"];
             
-            countryInfo["news4Title"] = result["results"][3]["title"];
-            countryInfo["news4Author"] = result["results"][3]["creator"];
-            countryInfo["news4Url"] = result["results"][3]["source_url"];
-            countryInfo["news4ImageUrl"] = result["results"][3]["image_url"];
+            // countryInfo["news4Title"] = result["results"][3]["title"];
+            // countryInfo["news4Author"] = result["results"][3]["creator"];
+            // countryInfo["news4Url"] = result["results"][3]["source_url"];
+            // countryInfo["news4ImageUrl"] = result["results"][3]["image_url"];
         } catch (error) {
             console.error('Error in getNews:', error);
         }
@@ -656,7 +655,6 @@ $(document).ready(function() {
             const result = await ajaxRequest("./libs/php/getWeather.php", {
                 data: encodedCity
             });
-            console.log(result)
             countryInfo["temperature"] = (result["main"]["temp"] - 273.15).toFixed(0) + "°C";
             countryInfo["feelsLike"] = (result["main"]["feels_like"] - 273.15).toFixed(0) + "°C";
             countryInfo["humidity"] = result["main"]["humidity"] + "%";
@@ -726,10 +724,8 @@ $(document).ready(function() {
                 getCities(),
                 getHolidays(),
                 setFlag(),
-                // getNews() // Call is no longer returning results // Limited credits on API call so keep commented out during testing, need to fix error handling for failed calls
+                getNews()
             ]);
-
-            console.log(countryInfo)
 
             $('#continent').html(countryInfo["continent"]);
             $('#capital-city').html(countryInfo["capitalCity"]);
@@ -753,9 +749,9 @@ $(document).ready(function() {
             $('#news-article-3-author').html(countryInfo["news3Author"]);
             $('#news-article-3-image').attr('src', countryInfo["news3ImageUrl"]);;
             $('#news-article-3-title').html(`<a href="${countryInfo["news3Url"]}" target="_blank">${countryInfo["news3Title"]}</a>`);
-            $('#news-article-4-author').html(countryInfo["news4Author"]);
-            $('#news-article-4-image').attr('src', countryInfo["news4ImageUrl"]);;
-            $('#news-article-4-title').html(`<a href="${countryInfo["news4Url"]}" target="_blank">${countryInfo["news4Title"]}</a>`);
+            // $('#news-article-4-author').html(countryInfo["news4Author"]);
+            // $('#news-article-4-image').attr('src', countryInfo["news4ImageUrl"]);;
+            // $('#news-article-4-title').html(`<a href="${countryInfo["news4Url"]}" target="_blank">${countryInfo["news4Title"]}</a>`);
             if (countryInfo["language2"]) {
                 $('#language').append('<br>' + countryInfo["language2"]);
             }
