@@ -40,9 +40,7 @@ var basemaps = {
     "Dark": dark
 };
 
-const layerControl = L.control.layers(basemaps).addTo(map);
 
-layerControl.setPosition('bottomleft');
 
 function createCustomButton(iconClass, modalId, positionClass, map) {
     return L.easyButton({
@@ -398,7 +396,13 @@ $(document).ready(function() {
         }
     }
     
-    let earthquakeMarkers = L.markerClusterGroup();
+    let earthquakeMarkers = L.markerClusterGroup({polygonOptions: {
+        fillColor: "#fff",
+        color: "#000",
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.5
+      }});
 
     async function getEarthquakes() {
         try {
@@ -461,7 +465,13 @@ $(document).ready(function() {
         }
     }
 
-    let airportMarkers = L.markerClusterGroup();
+    let airportMarkers = L.markerClusterGroup({polygonOptions: {
+        fillColor: "#fff",
+        color: "#000",
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.5
+      }});
 
     async function getAirports() {
 
@@ -496,7 +506,13 @@ $(document).ready(function() {
         }
     }
 
-    let cityMarkers = L.markerClusterGroup();
+    let cityMarkers = L.markerClusterGroup({polygonOptions: {
+        fillColor: "#fff",
+        color: "#000",
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.5
+      }});
 
     async function getCities() {
 
@@ -570,10 +586,18 @@ $(document).ready(function() {
             const result = await ajaxRequest("./libs/php/getHolidays.php", {
                 data: $('#countrySelect').val()
             });
+            
             function formatDate(dateString) {
-                const [year, month, day] = dateString.split('-');
-                return `${day}-${month}-${year}`;
+                const date = new Date(dateString);
+                const options = {
+                    month: 'long',
+                };
+                const formattedDate = date.toLocaleDateString('en-GB', options);
+                const day = date.getDate();
+                const suffix = (day === 1 || day === 21 || day === 31) ? 'st' : (day === 2 || day === 22) ? 'nd' : (day === 3 || day === 23) ? 'rd' : 'th';
+                return `${day}${suffix} ${formattedDate}`;
             }
+    
             if (result && result.length > 0) {
                 const tableBody = $('#holiday-table tbody');
                 const addedDates = new Set();
@@ -593,6 +617,7 @@ $(document).ready(function() {
             console.error('Error in getHolidays:', error);
         }
     }
+    
 
     async function getCountryInfo() {
         try {
@@ -701,6 +726,14 @@ $(document).ready(function() {
         $('#flag').empty().append(imgElement);
     }
 
+    var overlays = {
+        Airports: airportMarkers,
+        Earthquakes: earthquakeMarkers,
+        Cities: cityMarkers
+    }
+
+    const layerControl = L.control.layers(basemaps, overlays).addTo(map);
+
     // The below code will call the functions that will update the object.
     // Upon completion, a function will be called to update the HTML
 
@@ -708,7 +741,7 @@ $(document).ready(function() {
 
         try {
 
-            $('#loading-spinner').show();
+            $('#pre-load').removeClass("fadeOut");
 
             await Promise.all([
                 getCountryInfo(),
@@ -797,12 +830,21 @@ $(document).ready(function() {
         } catch (error) {
             console.error('An error occurred:', error);
         } finally {
-            $('#loading-spinner').hide();
+            $('#pre-load').addClass("fadeOut");
             $('#content').show();
         }
     });
 
     $('#dollar-amount').on('input', async function() {
+        try {
+            const convertedTotal = ($('#dollar-amount').val() * countryInfo.exchangeRate).toFixed(2);
+            $('#converted-total').val(parseFloat(convertedTotal).toLocaleString('en-US'));
+        } catch (error) {
+            console.error('Error in converted total:', error);
+        }
+    })
+
+    $('#dollar-amount').on('show.bs.modal', async function() {
         try {
             const convertedTotal = ($('#dollar-amount').val() * countryInfo.exchangeRate).toFixed(2);
             $('#converted-total').val(parseFloat(convertedTotal).toLocaleString('en-US'));
