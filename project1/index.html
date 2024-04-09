@@ -26,7 +26,7 @@
 
       <div id="dropdown">
         <select id="countrySelect" class="form-select shadow-sm">
-          <option value="" disabled selected>Select a country</option> <!--Hosted version has this appear before preloader finishes- try  style="display: none" inline-->
+          <option value="" disabled selected>Select a country</option>
         </select>
       </div>
       <div id="map"></div>
@@ -255,8 +255,6 @@
 
               <div class="modal-body">
         
-                <div id="pre-load"></div>
-        
                 <div class="row">
         
                   <div class="col border m-2">
@@ -281,15 +279,57 @@
                       </div>                      
                       
                     </div>
+        
+                  </div>   
+        
+                </div>
 
+                <div class="row">
+        
+                  <div class="col border m-2">
+        
+                    <p class="fw-bold fs-5 mt-1">Tomorrow:</p>
+                    
                     <div class="row">
 
                       <div class="col text-center">
-                        
-                        
 
-                      </div>   
+                        <img id="weather-img-1" />
 
+                      </div>
+
+                      <div class="col text-center">
+                        
+                        <p id="temperature-1" class="fw-bold fs-2"></p>
+                      
+                      </div>
+                      
+                    </div>
+        
+                  </div>   
+        
+                </div>
+
+                <div class="row">
+        
+                  <div class="col border m-2">
+        
+                    <p class="fw-bold fs-5 mt-1" id="weather-day-2">The next day:</p>
+                    
+                    <div class="row">
+
+                      <div class="col text-center">
+
+                        <img id="weather-img-2" />
+
+                      </div>
+
+                      <div class="col text-center">
+                        
+                        <p id="temperature-2" class="fw-bold fs-2"></p>
+                      
+                      </div>
+                      
                     </div>
         
                   </div>   
@@ -302,70 +342,8 @@
               <button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
-        </div>
-              <!-- <table class="table table-striped">
-                <tr>
-      
-                  <td>
-                    Temperature
-                  </td>
-      
-                  <td id="temperature">
-                    
-                  </td>
-      
-                </tr>
-  
-                <tr>
-      
-                  <td>
-                    Feels like
-                  </td>
-      
-                  <td id="feels-like">
-                    
-                  </td>
-      
-                </tr>
-  
-                <tr>
-      
-                  <td>
-                    Humidity
-                  </td>
-      
-                  <td id="humidity">
-                    
-                  </td>
-      
-                </tr>
-  
-                <tr>
-      
-                  <td>
-                    Description
-                  </td>
-      
-                  <td id="weather-description">
-                    
-                  </td>
-      
-                </tr>
-  
-                <tr>
-      
-                  <td>
-                    Wind speed
-                  </td>
-      
-                  <td id="wind-speed">
-                    
-                  </td>
-      
-                </tr>
-                      
-              </table> -->
-        </div>
+        </div> 
+      </div>
   
       <!-- NEWS MENU -->
   

@@ -226,9 +226,13 @@ $(document).ready(function() {
         temperature: 0,
         feelsLike: 0,
         humidity: 0,
-        weatherDescription: "",
         windSpeed: 0,
         weatherIconUrl: "",
+        temperature1: 0,
+        weatherIconUrl1: "",
+        temperature2: 0,
+        weatherIconUrl2: "",
+        weatherDay2: "",
         language: "",
         language2: "",
         language3: "",
@@ -339,6 +343,30 @@ $(document).ready(function() {
             console.error('Error fetching country info:', error);
             throw error;
         }
+    }
+
+    function getShortDate(dateItem) {
+        const dateString = dateItem;
+        const date = new Date(dateString);
+        const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const dayOfWeekIndex = date.getDay();
+        const dayOfWeek = weekdays[dayOfWeekIndex];
+        const dayOfMonth = date.getDate();
+
+        function getDayOfMonthWithSuffix(day) {
+            if (day >= 11 && day <= 13) {
+                return day + 'th';
+            }
+            switch (day % 10) {
+                case 1: return day + 'st';
+                case 2: return day + 'nd';
+                case 3: return day + 'rd';
+                default: return day + 'th';
+            }
+        }
+        const dayOfMonthWithSuffix = getDayOfMonthWithSuffix(dayOfMonth);
+        const formattedDate = `${dayOfWeek} ${dayOfMonthWithSuffix}`;
+        return formattedDate
     }
 
     async function setBoundingBox() {
@@ -454,7 +482,7 @@ $(document).ready(function() {
                     .bindPopup(`<div><strong>An earthquake with magnitude ${magnitude} and depth ${depth} 
                                 occurred here on ${date} at ${time}. Click 
                                 <a href=${earthquakeInfo} target="_blank">here</a> 
-                                to read more</strong></div>`)
+                                to read more.</strong></div>`)
                     .addTo(earthquakeMarkers);
             });
 
@@ -618,7 +646,6 @@ $(document).ready(function() {
         }
     }
     
-
     async function getCountryInfo() {
         try {
             const result = await ajaxRequest("./libs/php/getCountryInfo.php", {
@@ -680,12 +707,18 @@ $(document).ready(function() {
             const result = await ajaxRequest("./libs/php/getWeather.php", {
                 data: encodedCity
             });
-            countryInfo["temperature"] = (result["main"]["temp"] - 273.15).toFixed(0) + "°C";
-            countryInfo["feelsLike"] = (result["main"]["feels_like"] - 273.15).toFixed(0) + "°C";
-            countryInfo["humidity"] = result["main"]["humidity"] + "%";
-            countryInfo["windSpeed"] = (result["wind"]["speed"]).toFixed(0) + "mph";
-            countryInfo["weatherDescription"] = result["weather"]["0"]["main"];
-            countryInfo["weatherIconUrl"] = `https://openweathermap.org/img/wn/${result["weather"]["0"]["icon"]}@2x.png`;
+            countryInfo["temperature"] = (result["current"]["temp_c"]).toFixed(0) + "°C";
+            countryInfo["feelsLike"] = (result["current"]["feelslike_c"]).toFixed(0) + "°C";
+            countryInfo["humidity"] = result["current"]["humidity"] + "%";
+            countryInfo["windSpeed"] = (result["current"]["wind_mph"]).toFixed(0) + "mph";
+            countryInfo["weatherIconUrl"] = result["current"]["condition"]["icon"];
+
+            countryInfo["temperature1"] = (result["forecast"]["forecastday"]["1"]["day"]["avgtemp_c"]).toFixed(0) + "°C";
+            countryInfo["weatherIconUrl1"] = (result["forecast"]["forecastday"]["1"]["day"]["condition"]["icon"]);
+
+            countryInfo["temperature2"] = (result["forecast"]["forecastday"]["2"]["day"]["avgtemp_c"]).toFixed(0) + "°C";
+            countryInfo["weatherIconUrl2"] = (result["forecast"]["forecastday"]["2"]["day"]["condition"]["icon"]);
+            countryInfo["weatherDay2"] = (result["forecast"]["forecastday"]["2"]["date"]);
         } catch (error) {
             console.error('Error in getWeather:', error);
         }
@@ -771,6 +804,12 @@ $(document).ready(function() {
             $('#wind-speed').html(`Wind: ${countryInfo["windSpeed"]}`);
             $('#weather-title').html(`${countryInfo["capitalCity"]}, ${countryInfo["name"]}`);
             $('#weather-img').attr('src', countryInfo['weatherIconUrl'])
+            $('#temperature-1').html(countryInfo["temperature1"]);
+            $('#weather-img-1').attr('src', countryInfo['weatherIconUrl1'])
+            $('#temperature-2').html(countryInfo["temperature2"]);
+            $('#weather-img-2').attr('src', countryInfo['weatherIconUrl2'])
+            var shortDateString = getShortDate(countryInfo["weatherDay2"]) + ":"
+            $('#weather-day-2').html(shortDateString);
             $('#language').html(countryInfo["language"]);
             $('#timezoneId').html(countryInfo["timezoneId"]);
             $('#news-article-1-author').html(countryInfo["news1Author"]);
