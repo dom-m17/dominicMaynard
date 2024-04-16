@@ -105,5 +105,3 @@
 	mysqli_close($conn);
 
 	echo json_encode($output); 
-
-?>
