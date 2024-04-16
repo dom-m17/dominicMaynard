@@ -1,0 +1,25 @@
+Company Directory
+
+1. Have all company employees appear upon page load
+
+2. Refresh results upon filter input
+- Filter should search first name and last name for results
+
+3. Refresh button
+- Simply needs to search the database again, keeping search filters in tact
+
+4. Filter button
+- Allow user to filter by location and/or department
+
+5. Personnel, departments and locations buttons
+- Refresh and adjust the results to show either the employees, departments or locations
+
+6. Add button
+- Modal appears allowing user to select to add employee, department or location
+
+7. Edit button
+- Modal showing all data related to the selected employee with the option to edit any information (Also for location & department)
+
+8. Delete button
+- Modal asking for confirmation (Also for location & department)
+
