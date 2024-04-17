@@ -1,6 +1,8 @@
 Company Directory
 
-1. Have all company employees appear upon page load
+1. *Have all company employees appear upon page load*
+*Have all company departments appear upon page load*
+Have all company locations appear upon page load
 
 2. Refresh results upon filter input
 - Filter should search first name and last name for results
@@ -22,4 +24,3 @@ Company Directory
 
 8. Delete button
 - Modal asking for confirmation (Also for location & department)
-

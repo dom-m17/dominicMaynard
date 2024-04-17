@@ -124,13 +124,13 @@ $("#editPersonnelForm").on("submit", function (e) {
   
 });
 
+// This function populates the personnel table with ALL employees in the database
 function getAllEmployees() {
   const result = $.ajax({
     url: './libs/php/getAll.php',
     type: 'POST',
     dataType: 'json',
     success: function(result) {
-      console.log(result)
       result["data"].forEach(function(employee) {
         // Create table row
         var tr = $('<tr>');
@@ -180,10 +180,65 @@ function getAllEmployees() {
         console.log(errorThrown);
     }
   })
-}  // This function populates the personnel table with all employees in the database
+}  
+
+// This function populates the departments table with ALL departments and the locations table with ALL the locations.
+function getAllDepartmentsAndLocations() {
+  let appendedLocations = []
+  const result = $.ajax({
+    url: './libs/php/getAllDepartments.php',
+    type: 'POST',
+    dataType: 'json',
+    success: function(result) {
+      // Loop through each department in the result data
+      result.data.forEach(function(department) {
+        // Create a new table row
+        var $row = $('<tr>');
+
+        // Create and append table data for department name
+        $row.append($('<td class="align-middle text-nowrap">').text(department.name));
+
+        // Create and append table data for department location
+        $row.append($('<td class="align-middle text-nowrap d-none d-md-table-cell">').text(department.location));
+
+        // Create and append table data for edit and delete buttons
+        var $buttonCell = $('<td class="align-middle text-end text-nowrap">');
+        $buttonCell.append('<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" data-id="' + department.id + '"><i class="fa-solid fa-pencil fa-fw"></i></button>');
+        $buttonCell.append('<button type="button" class="btn btn-primary btn-sm deleteDepartmentBtn" data-id="' + department.id + '"><i class="fa-solid fa-trash fa-fw"></i></button>');
+        $row.append($buttonCell);
+
+        // Append the row to the table
+        $('#departmentTableBody').append($row);
+        
+        if (!appendedLocations.includes(department.locationID)) {
+          // Create a new table row
+          var $row2 = $('<tr>');
+
+          // Create and append table data for location name
+          $row2.append($('<td class="align-middle text-nowrap">').text(department.location));
+
+          // Create and append table data for edit and delete buttons
+          var $buttonCell2 = $('<td class="align-middle text-end text-nowrap">');
+          $buttonCell2.append('<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" data-id="' + department.locationID + '"><i class="fa-solid fa-pencil fa-fw"></i></button>');
+          $buttonCell2.append('<button type="button" class="btn btn-primary btn-sm deleteDepartmentBtn" data-id="' + department.locationID + '"><i class="fa-solid fa-trash fa-fw"></i></button>');
+          $row2.append($buttonCell2);
+
+          // Append the row to the table
+          $('#locationTableBody').append($row2);
+          appendedLocations.push(department.locationID)
+        }
+      });
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log('Error');
+      console.log(errorThrown);
+    }
+  });
+} 
 
 $(document).ready(function() {
 
   getAllEmployees()
+  getAllDepartmentsAndLocations()
 
 })
