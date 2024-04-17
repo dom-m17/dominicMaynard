@@ -1,6 +1,6 @@
 $("#searchInp").on("keyup", function () {
   
-    // your code
+    searchEmployees();
     
   });
   
@@ -181,6 +181,68 @@ function getAllEmployees() {
     }
   })
 }  
+
+// This function searches the database for all employees matching the search criteria
+function searchEmployees() {
+  const result = $.ajax({
+    url: './libs/php/searchAll.php',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      "txt": $("#searchInp").val()
+    },
+    success: function(result) {
+      $('#personnelTableBody').empty();
+      result["data"]["found"].forEach(function(employee) {
+        // Create table row
+        var tr = $('<tr>');
+
+        // Create table data for name
+        var name = employee.lastName + ', ' + employee.firstName;
+        var nameTd = $('<td>').addClass('align-middle text-nowrap').text(name);
+        tr.append(nameTd);
+
+        // Create table data for job title
+        var jobTitleTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.jobTitle);
+        tr.append(jobTitleTd);
+
+        // Create table data for department
+        var departmentTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.department);
+        tr.append(departmentTd);
+
+        // Create table data for location
+        var locationTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.location);
+        tr.append(locationTd);
+
+        // Create table data for email
+        var emailTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.email);
+        tr.append(emailTd);
+
+        // Create table data for buttons
+        var buttonsTd = $('<td>').addClass('text-end text-nowrap');
+        var editButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
+            'type': 'button',
+            'data-bs-toggle': 'modal',
+            'data-bs-target': '#editPersonnelModal',
+            'data-id': employee.id
+        }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
+        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deletePersonnelBtn').attr({
+            'type': 'button',
+            'data-id': employee.id
+        }).html('<i class="fa-solid fa-trash fa-fw"></i>');
+        buttonsTd.append(editButton, deleteButton);
+        tr.append(buttonsTd);
+
+        // Append the table row to the table body
+        $('#personnelTableBody').append(tr);
+    });
+},
+    error: function(jqXHR, textStatus, errorThrown) {
+        console.log('Error');
+        console.log(errorThrown);
+    }
+  })
+} 
 
 // This function populates the departments table with ALL departments and the locations table with ALL the locations.
 function getAllDepartmentsAndLocations() {
