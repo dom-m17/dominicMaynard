@@ -8,7 +8,7 @@ $("#refreshBtn").click(function () {
   
   if ($("#personnelBtn").hasClass("active")) {
     
-    // Refresh personnel table
+    getAllEmployees() // Could alternatively use the searchEmployees() function, just depends what the 'client' would prefer
     
   } else {
     
@@ -60,7 +60,7 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
   
   $.ajax({
     url:
-      "https://coding.itcareerswitch.co.uk/companydirectory/libs/php/getPersonnelByID.php",
+      "./libs/php/getPersonnelByID.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -121,11 +121,37 @@ $("#editPersonnelForm").on("submit", function (e) {
   e.preventDefault();
 
   // AJAX call to save form data
-  
+
+  $.ajax({
+    url:
+      "./libs/php/editPersonnel.php",
+    type: 'POST',
+    dataType: "json",
+    data: {
+      id: $("#editPersonnelEmployeeID").val(),
+      firstName: $("#editPersonnelFirstName").val(),
+      lastName: $("#editPersonnelLastName").val(),
+      email: $("#editPersonnelEmailAddress").val(),
+      jobTitle: $("#editPersonnelJobTitle").val(),
+      department: $("#editPersonnelDepartment").val(),
+    }, // php script is currently not working- this is going to error rather than success
+    success: function () {
+      $("#notification").text("Employee successfully updated").removeClass("error").addClass("success").fadeIn();
+      console.log("Employee successfully updated");
+      alert("Employee succesfully updated") // This should be changed so a modal is used rather than a window popup
+      },
+    error: function (jqXHR, textStatus, errorThrown) {
+      $("#notification").text("Error updating employee: " + errorThrown).removeClass("success").addClass("error").fadeIn();
+      console.log(errorThrown);
+      alert("Error updating employee")
+    }
+  })
 });
 
 // This function populates the personnel table with ALL employees in the database
 function getAllEmployees() {
+  $("#searchInp").val("")
+  $('#personnelTableBody').empty();
   const result = $.ajax({
     url: './libs/php/getAll.php',
     type: 'POST',
@@ -184,6 +210,7 @@ function getAllEmployees() {
 
 // This function searches the database for all employees matching the search criteria
 function searchEmployees() {
+  $('#personnelTableBody').empty();
   const result = $.ajax({
     url: './libs/php/searchAll.php',
     type: 'POST',
@@ -192,7 +219,6 @@ function searchEmployees() {
       "txt": $("#searchInp").val()
     },
     success: function(result) {
-      $('#personnelTableBody').empty();
       result["data"]["found"].forEach(function(employee) {
         // Create table row
         var tr = $('<tr>');
@@ -207,11 +233,11 @@ function searchEmployees() {
         tr.append(jobTitleTd);
 
         // Create table data for department
-        var departmentTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.department);
+        var departmentTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.departmentName);
         tr.append(departmentTd);
 
         // Create table data for location
-        var locationTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.location);
+        var locationTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.locationName);
         tr.append(locationTd);
 
         // Create table data for email
@@ -264,10 +290,19 @@ function getAllDepartmentsAndLocations() {
         $row.append($('<td class="align-middle text-nowrap d-none d-md-table-cell">').text(department.location));
 
         // Create and append table data for edit and delete buttons
-        var $buttonCell = $('<td class="align-middle text-end text-nowrap">');
-        $buttonCell.append('<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" data-id="' + department.id + '"><i class="fa-solid fa-pencil fa-fw"></i></button>');
-        $buttonCell.append('<button type="button" class="btn btn-primary btn-sm deleteDepartmentBtn" data-id="' + department.id + '"><i class="fa-solid fa-trash fa-fw"></i></button>');
-        $row.append($buttonCell);
+        var buttonsTd = $('<td>').addClass('text-end text-nowrap');
+        var editButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
+            'type': 'button',
+            'data-bs-toggle': 'modal',
+            'data-bs-target': '#editDepartmentModal',
+            'data-id': department.id
+        }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
+        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deleteDepartmentBtn').attr({
+            'type': 'button',
+            'data-id': department.id
+        }).html('<i class="fa-solid fa-trash fa-fw"></i>');
+        buttonsTd.append(editButton, deleteButton);
+        $row.append(buttonsTd);
 
         // Append the row to the table
         $('#departmentTableBody').append($row);
@@ -280,10 +315,19 @@ function getAllDepartmentsAndLocations() {
           $row2.append($('<td class="align-middle text-nowrap">').text(department.location));
 
           // Create and append table data for edit and delete buttons
-          var $buttonCell2 = $('<td class="align-middle text-end text-nowrap">');
-          $buttonCell2.append('<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" data-id="' + department.locationID + '"><i class="fa-solid fa-pencil fa-fw"></i></button>');
-          $buttonCell2.append('<button type="button" class="btn btn-primary btn-sm deleteDepartmentBtn" data-id="' + department.locationID + '"><i class="fa-solid fa-trash fa-fw"></i></button>');
-          $row2.append($buttonCell2);
+          var buttonsTd2 = $('<td>').addClass('text-end text-nowrap');
+          var editButton2 = $('<button>').addClass('btn btn-primary btn-sm').attr({
+              'type': 'button',
+              'data-bs-toggle': 'modal',
+              'data-bs-target': '#editLocationModal',
+              'data-id': location.id
+          }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
+          var deleteButton2 = $('<button>').addClass('btn btn-primary btn-sm deleteLocationBtn').attr({
+              'type': 'button',
+              'data-id': location.id
+          }).html('<i class="fa-solid fa-trash fa-fw"></i>');
+          buttonsTd2.append(editButton2, deleteButton2);
+          $row2.append(buttonsTd2);
 
           // Append the row to the table
           $('#locationTableBody').append($row2);
