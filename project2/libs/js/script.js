@@ -8,17 +8,17 @@ $("#refreshBtn").click(function () {
   
   if ($("#personnelBtn").hasClass("active")) {
     
-    getAllEmployees() // Could alternatively use the searchEmployees() function, just depends what the 'client' would prefer
+    getAllEmployees()
     
   } else {
     
     if ($("#departmentsBtn").hasClass("active")) {
       
-      // Refresh department table
+      getAllDepartmentsAndLocations()
       
     } else {
       
-      // Refresh location table
+      getAllDepartmentsAndLocations()
       
     }
     
@@ -195,7 +195,7 @@ $("#editDepartmentModal").on("show.bs.modal", function (e) {
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
-      $("#editPersonnelModal .modal-title").replaceWith(
+      $("#editLocationModal .modal-title").replaceWith(
         "Error retrieving data"
       );
     }
@@ -210,9 +210,6 @@ $("#editDepartmentForm").on("submit", function (e) {
   e.preventDefault();
 
   // AJAX call to save form data
-  console.log($("#editDepartmentID").val())
-  console.log($("#editDepartmentName").val())
-  console.log($("#editDepartmentLocation").val())
 
   $.ajax({
     url:
@@ -225,12 +222,49 @@ $("#editDepartmentForm").on("submit", function (e) {
       locationId: $("#editDepartmentLocation").val()
     },
     success: function () {
-      console.log("Employee successfully updated");
+      console.log("Department successfully updated");
       alert("Department succesfully updated") // This should be changed so a modal is used rather than a window popup
       },
     error: function (jqXHR, textStatus, errorThrown) {
       console.log(errorThrown);
       alert("Error updating department")
+    }
+  })
+});
+
+$("#editLocationModal").on("show.bs.modal", function (e) {
+  
+  $("#editLocationID").val($(e.relatedTarget).attr("data-id"));
+
+  $("#editLocationName").val($(e.relatedTarget).attr("data-name"));
+        
+});
+
+$("#editLocationForm").on("submit", function (e) {
+  
+  // Executes when the form button with type="submit" is clicked
+  // stop the default browser behviour
+
+  e.preventDefault();
+
+  // AJAX call to save form data
+
+  $.ajax({
+    url:
+      "./libs/php/editLocation.php",
+    type: 'POST',
+    dataType: "json",
+    data: {
+      id: $("#editLocationID").val(),
+      name: $("#editLocationName").val()
+    },
+    success: function () {
+      console.log("Location successfully updated");
+      alert("Location succesfully updated") // This should be changed so a modal is used rather than a window popup
+      },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log(errorThrown);
+      alert("Error updating location")
     }
   })
 });
@@ -359,6 +393,9 @@ function searchEmployees() {
 
 // This function populates the departments table with ALL departments and the locations table with ALL the locations.
 function getAllDepartmentsAndLocations() {
+  $("#searchInp").val("")
+  $('#departmentTableBody').empty();
+  $('#locationTableBody').empty();
   let appendedLocations = []
   const result = $.ajax({
     url: './libs/php/getAllDepartments.php',
@@ -407,11 +444,13 @@ function getAllDepartmentsAndLocations() {
               'type': 'button',
               'data-bs-toggle': 'modal',
               'data-bs-target': '#editLocationModal',
-              'data-id': location.id
+              'data-id': department.locationID,
+              'data-name': department.location
           }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
           var deleteButton2 = $('<button>').addClass('btn btn-primary btn-sm deleteLocationBtn').attr({
               'type': 'button',
-              'data-id': location.id
+              'data-id': department.locationID,
+              'data-name': department.location
           }).html('<i class="fa-solid fa-trash fa-fw"></i>');
           buttonsTd2.append(editButton2, deleteButton2);
           $row2.append(buttonsTd2);
