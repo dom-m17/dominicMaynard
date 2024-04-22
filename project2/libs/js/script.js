@@ -56,6 +56,8 @@ $("#locationsBtn").click(function () {
   
 });
 
+ // This populates the modal when it is clicked on with the information relevant to the employee
+ // Need to do the same for department and location
 $("#editPersonnelModal").on("show.bs.modal", function (e) {
   
   $.ajax({
@@ -134,16 +136,101 @@ $("#editPersonnelForm").on("submit", function (e) {
       email: $("#editPersonnelEmailAddress").val(),
       jobTitle: $("#editPersonnelJobTitle").val(),
       department: $("#editPersonnelDepartment").val(),
-    }, // php script is currently not working- this is going to error rather than success
+    },
     success: function () {
-      $("#notification").text("Employee successfully updated").removeClass("error").addClass("success").fadeIn();
+      // $("#notification").text("Employee successfully updated").removeClass("error").addClass("success").fadeIn();
       console.log("Employee successfully updated");
       alert("Employee succesfully updated") // This should be changed so a modal is used rather than a window popup
       },
     error: function (jqXHR, textStatus, errorThrown) {
-      $("#notification").text("Error updating employee: " + errorThrown).removeClass("success").addClass("error").fadeIn();
+      // $("#notification").text("Error updating employee: " + errorThrown).removeClass("success").addClass("error").fadeIn();
       console.log(errorThrown);
       alert("Error updating employee")
+    }
+  })
+});
+
+$("#editDepartmentModal").on("show.bs.modal", function (e) {
+  
+  $.ajax({
+    url:
+      "./libs/php/getDepartmentByID.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      // Retrieve the data-id attribute from the calling button
+      // see https://getbootstrap.com/docs/5.0/components/modal/#varying-modal-content
+      // for the non-jQuery JavaScript alternative
+      id: $(e.relatedTarget).attr("data-id") 
+    },
+    success: function (result) {
+      var resultCode = result.status.code;
+
+      if (resultCode == 200) {
+        
+        // Update the hidden input with the employee id so that
+        // it can be referenced when the form is submitted
+
+        $("#editDepartmentID").val(result.data.department[0].id);
+
+        $("#editDepartmentName").val(result.data.department[0].name);
+
+        $("#editDepartmentName").html("");
+
+        $.each(result.data.location, function () {
+          $("#editDepartmentLocation").append(
+            $("<option>", {
+              value: this.id,
+              text: this.name
+            })
+          );
+        });
+
+        $("#editDepartmentLocation").val(result.data.department[0].locationID);
+        
+      } else {
+        $("#editDepartmentModal .modal-title").replaceWith(
+          "Error retrieving data"
+        );
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      $("#editPersonnelModal .modal-title").replaceWith(
+        "Error retrieving data"
+      );
+    }
+  });
+});
+
+$("#editDepartmentForm").on("submit", function (e) {
+  
+  // Executes when the form button with type="submit" is clicked
+  // stop the default browser behviour
+
+  e.preventDefault();
+
+  // AJAX call to save form data
+  console.log($("#editDepartmentID").val())
+  console.log($("#editDepartmentName").val())
+  console.log($("#editDepartmentLocation").val())
+
+  $.ajax({
+    url:
+      "./libs/php/editDepartment.php",
+    type: 'POST',
+    dataType: "json",
+    data: {
+      id: $("#editDepartmentID").val(),
+      name: $("#editDepartmentName").val(),
+      locationId: $("#editDepartmentLocation").val()
+    },
+    success: function () {
+      console.log("Employee successfully updated");
+      alert("Department succesfully updated") // This should be changed so a modal is used rather than a window popup
+      },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log(errorThrown);
+      alert("Error updating department")
     }
   })
 });
