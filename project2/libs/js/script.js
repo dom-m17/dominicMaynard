@@ -14,11 +14,11 @@ $("#refreshBtn").click(function () {
     
     if ($("#departmentsBtn").hasClass("active")) {
       
-      getAllDepartmentsAndLocations()
+      getAllDepartments()
       
     } else {
       
-      getAllDepartmentsAndLocations()
+      getAllLocations()
       
     }
     
@@ -35,29 +35,95 @@ $("#filterBtn").click(function () {
 $("#addBtn").click(function () {
   
   // Replicate the logic of the refresh button click to open the add modal for the table that is currently on display
+
+  if ($("#personnelBtn").hasClass("active")) {
+    
+    // Add employee modal appears
+    // User presses cancel (close modal) or save (next step)
+    // When save pressed, make ajax request with inputted data (check all required data exists)
+    // If successful, alert user that employee was added. If failed, alert user that there was an error
+    $('#addPersonnelModal').modal('show');
+    $("#addPersonnelDepartment").empty();
+    $("#addPersonnelDepartment").append("<option value='' selected disabled>Select Department</option>");
+    const result = $.ajax({
+      url: './libs/php/getAllDepartments.php',
+      type: 'POST',
+      dataType: 'json',
+      success: function(result) {
+        result.data.forEach(function(department) {
+          $("#addPersonnelDepartment").append(
+            $("<option>", {
+              value: department.id,
+              text: department.name
+            })
+          );
+        });
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log('Error');
+        console.log(errorThrown);
+      }
+    });
+    
+  } else {
+    
+    if ($("#departmentsBtn").hasClass("active")) {
+      
+      $('#addDepartmentModal').modal('show');
+      $("#addDepartmentLocation").empty();
+      $("#addDepartmentLocation").append("<option value='' selected disabled>Select Location</option>");
+      const result = $.ajax({
+        url: './libs/php/getAllDepartments.php',
+        type: 'POST',
+        dataType: 'json',
+        success: function(result) {
+          let appendedLocations = [];
+          result.data.forEach(function(department) {
+            if (!appendedLocations.includes(department.locationID)) {
+            $("#addDepartmentLocation").append(
+              $("<option>", {
+                value: department.locationID,
+                text: department.location
+              })
+            );
+            appendedLocations.push(department.locationID);
+            }
+          });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log('Error');
+          console.log(errorThrown);
+        }
+      });
+      
+    } else {
+      
+      $('#addLocationModal').modal('show');
+      
+    }
+    
+  }
   
 });
 
 $("#personnelBtn").click(function () {
   
-  // Call function to refresh personnel table
+  searchEmployees()
   
 });
 
 $("#departmentsBtn").click(function () {
   
-  // Call function to refresh department table
+  getAllDepartments()
   
 });
 
 $("#locationsBtn").click(function () {
   
-  // Call function to refresh location table
+  getAllLocations()
   
 });
 
- // This populates the modal when it is clicked on with the information relevant to the employee
- // Need to do the same for department and location
 $("#editPersonnelModal").on("show.bs.modal", function (e) {
   
   $.ajax({
@@ -269,6 +335,99 @@ $("#editLocationForm").on("submit", function (e) {
   })
 });
 
+$("#addPersonnelForm").on("submit", function (e) {
+  
+  // Executes when the form button with type="submit" is clicked
+  // stop the default browser behviour
+
+  e.preventDefault();
+
+  // AJAX call to save form data
+
+  $.ajax({
+    url:
+      "./libs/php/insertPersonnel.php",
+    type: 'POST',
+    dataType: "json",
+    data: {
+      firstName: $("#addPersonnelFirstName").val(),
+      lastName: $("#addPersonnelLastName").val(),
+      email: $("#addPersonnelEmailAddress").val(),
+      jobTitle: $("#addPersonnelJobTitle").val(),
+      departmentId: $("#addPersonnelDepartment").val(),
+    },
+    success: function () {
+      // $("#notification").text("Employee successfully updated").removeClass("error").addClass("success").fadeIn();
+      console.log("Employee successfully added");
+      alert("Employee succesfully added") // This should be changed so a modal is used rather than a window popup
+      },
+    error: function (jqXHR, textStatus, errorThrown) {
+      // $("#notification").text("Error updating employee: " + errorThrown).removeClass("success").addClass("error").fadeIn();
+      console.log(errorThrown);
+      alert("Error adding employee")
+    }
+  })
+});
+
+$("#addDepartmentForm").on("submit", function (e) {
+  
+  // Executes when the form button with type="submit" is clicked
+  // stop the default browser behviour
+
+  e.preventDefault();
+
+  // AJAX call to save form data
+
+  $.ajax({
+    url:
+      "./libs/php/insertDepartment.php",
+    type: 'POST',
+    dataType: "json",
+    data: {
+      name: $("#addDepartmentName").val(),
+      locationId: $("#addDepartmentLocation").val()
+    },
+    success: function () {
+      console.log("Department successfully updated");
+      alert("Department succesfully added") // This should be changed so a modal is used rather than a window popup
+      },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log(errorThrown);
+      alert("Error adding department")
+    }
+  })
+});
+
+$("#addLocationForm").on("submit", function (e) {
+  
+  // Executes when the form button with type="submit" is clicked
+  // stop the default browser behviour
+
+  e.preventDefault();
+
+  // AJAX call to save form data
+
+  $.ajax({
+    url:
+      "./libs/php/insertLocation.php",
+    type: 'POST',
+    dataType: "json",
+    data: {
+      name: $("#addLocationName").val()
+    },
+    success: function (result) {
+      console.log(result)
+      console.log("Location successfully added");
+      alert("Location succesfully added") // This should be changed so a modal is used rather than a window popup
+      },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log(errorThrown);
+      alert("Error adding location")
+    }
+  })
+});
+
+
 // This function populates the personnel table with ALL employees in the database
 function getAllEmployees() {
   $("#searchInp").val("")
@@ -391,29 +550,18 @@ function searchEmployees() {
   })
 } 
 
-// This function populates the departments table with ALL departments and the locations table with ALL the locations.
-function getAllDepartmentsAndLocations() {
-  $("#searchInp").val("")
+// This function populates the departments table with ALL departments.
+function getAllDepartments() {
+  $("#searchInp").val("");
   $('#departmentTableBody').empty();
-  $('#locationTableBody').empty();
-  let appendedLocations = []
   const result = $.ajax({
     url: './libs/php/getAllDepartments.php',
     type: 'POST',
     dataType: 'json',
     success: function(result) {
-      // Loop through each department in the result data
       result.data.forEach(function(department) {
-        // Create a new table row
         var $row = $('<tr>');
-
-        // Create and append table data for department name
         $row.append($('<td class="align-middle text-nowrap">').text(department.name));
-
-        // Create and append table data for department location
-        $row.append($('<td class="align-middle text-nowrap d-none d-md-table-cell">').text(department.location));
-
-        // Create and append table data for edit and delete buttons
         var buttonsTd = $('<td>').addClass('text-end text-nowrap');
         var editButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
             'type': 'button',
@@ -427,38 +575,7 @@ function getAllDepartmentsAndLocations() {
         }).html('<i class="fa-solid fa-trash fa-fw"></i>');
         buttonsTd.append(editButton, deleteButton);
         $row.append(buttonsTd);
-
-        // Append the row to the table
         $('#departmentTableBody').append($row);
-        
-        if (!appendedLocations.includes(department.locationID)) {
-          // Create a new table row
-          var $row2 = $('<tr>');
-
-          // Create and append table data for location name
-          $row2.append($('<td class="align-middle text-nowrap">').text(department.location));
-
-          // Create and append table data for edit and delete buttons
-          var buttonsTd2 = $('<td>').addClass('text-end text-nowrap');
-          var editButton2 = $('<button>').addClass('btn btn-primary btn-sm').attr({
-              'type': 'button',
-              'data-bs-toggle': 'modal',
-              'data-bs-target': '#editLocationModal',
-              'data-id': department.locationID,
-              'data-name': department.location
-          }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
-          var deleteButton2 = $('<button>').addClass('btn btn-primary btn-sm deleteLocationBtn').attr({
-              'type': 'button',
-              'data-id': department.locationID,
-              'data-name': department.location
-          }).html('<i class="fa-solid fa-trash fa-fw"></i>');
-          buttonsTd2.append(editButton2, deleteButton2);
-          $row2.append(buttonsTd2);
-
-          // Append the row to the table
-          $('#locationTableBody').append($row2);
-          appendedLocations.push(department.locationID)
-        }
       });
     },
     error: function(jqXHR, textStatus, errorThrown) {
@@ -466,11 +583,125 @@ function getAllDepartmentsAndLocations() {
       console.log(errorThrown);
     }
   });
-} 
+}
+
+// This function populates the locations table with ALL the locations.
+function getAllLocations() {
+  $('#locationTableBody').empty();
+  const result = $.ajax({
+    url: './libs/php/getAllLocations.php',
+    type: 'POST',
+    dataType: 'json',
+    success: function(result) {
+      result.data.forEach(function(location) {
+        var $row = $('<tr>');
+        $row.append($('<td class="align-middle text-nowrap">').text(location.name));
+        var buttonsTd = $('<td>').addClass('text-end text-nowrap');
+        var editButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
+            'type': 'button',
+            'data-bs-toggle': 'modal',
+            'data-bs-target': '#editLocationModal',
+            'data-id': location.Id,
+            'data-name': location.name
+        }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
+        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deleteLocationBtn').attr({
+            'type': 'button',
+            'data-id': location.Id,
+            'data-name': location.name
+        }).html('<i class="fa-solid fa-trash fa-fw"></i>');
+        buttonsTd.append(editButton, deleteButton);
+        $row.append(buttonsTd);
+        $('#locationTableBody').append($row);
+      });
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log('Error');
+      console.log(errorThrown);
+    }
+  });
+}
+
+// This function populates the departments table with ALL departments and the locations table with ALL the locations.
+// function getAllDepartmentsAndLocations() {
+//   $("#searchInp").val("")
+//   $('#departmentTableBody').empty();
+//   $('#locationTableBody').empty();
+//   let appendedLocations = []
+//   const result = $.ajax({
+//     url: './libs/php/getAllDepartments.php',
+//     type: 'POST',
+//     dataType: 'json',
+//     success: function(result) {
+//       // Loop through each department in the result data
+//       result.data.forEach(function(department) {
+//         // Create a new table row
+//         var $row = $('<tr>');
+
+//         // Create and append table data for department name
+//         $row.append($('<td class="align-middle text-nowrap">').text(department.name));
+
+//         // Create and append table data for department location
+//         $row.append($('<td class="align-middle text-nowrap d-none d-md-table-cell">').text(department.location));
+
+//         // Create and append table data for edit and delete buttons
+//         var buttonsTd = $('<td>').addClass('text-end text-nowrap');
+//         var editButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
+//             'type': 'button',
+//             'data-bs-toggle': 'modal',
+//             'data-bs-target': '#editDepartmentModal',
+//             'data-id': department.id
+//         }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
+//         var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deleteDepartmentBtn').attr({
+//             'type': 'button',
+//             'data-id': department.id
+//         }).html('<i class="fa-solid fa-trash fa-fw"></i>');
+//         buttonsTd.append(editButton, deleteButton);
+//         $row.append(buttonsTd);
+
+//         // Append the row to the table
+//         $('#departmentTableBody').append($row);
+        
+//         if (!appendedLocations.includes(department.locationID)) {
+//           // Create a new table row
+//           var $row2 = $('<tr>');
+
+//           // Create and append table data for location name
+//           $row2.append($('<td class="align-middle text-nowrap">').text(department.location));
+
+//           // Create and append table data for edit and delete buttons
+//           var buttonsTd2 = $('<td>').addClass('text-end text-nowrap');
+//           var editButton2 = $('<button>').addClass('btn btn-primary btn-sm').attr({
+//               'type': 'button',
+//               'data-bs-toggle': 'modal',
+//               'data-bs-target': '#editLocationModal',
+//               'data-id': department.locationID,
+//               'data-name': department.location
+//           }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
+//           var deleteButton2 = $('<button>').addClass('btn btn-primary btn-sm deleteLocationBtn').attr({
+//               'type': 'button',
+//               'data-id': department.locationID,
+//               'data-name': department.location
+//           }).html('<i class="fa-solid fa-trash fa-fw"></i>');
+//           buttonsTd2.append(editButton2, deleteButton2);
+//           $row2.append(buttonsTd2);
+
+//           // Append the row to the table
+//           $('#locationTableBody').append($row2);
+//           appendedLocations.push(department.locationID)
+//         }
+//       });
+//     },
+//     error: function(jqXHR, textStatus, errorThrown) {
+//       console.log('Error');
+//       console.log(errorThrown);
+//     }
+//   });
+// } 
 
 $(document).ready(function() {
 
   getAllEmployees()
-  getAllDepartmentsAndLocations()
+  getAllDepartments()
+  getAllLocations()
 
 })
