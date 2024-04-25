@@ -376,6 +376,32 @@
 
       </div>
 
+      <div id="confirmDelete" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+              
+          <div class="modal-content shadow"> 
+            
+            <div class="modal-header bg-primary bg-gradient text-white">
+              <h5 class="modal-title">Confirm Delete</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <input type="hidden" id="idToDelete">
+      
+            <div class="modal-body text-center" id="deleteMessage"></div>
+      
+            <div class="modal-footer">
+              <button type="submit" id="deleteBtn" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal" style="width: 80px;">CONFIRM</button>
+              <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+            </div>
+      
+          </div>
+          
+        </div>
+
+      </div>
+
   </body>
 
   <script src="./libs/js/jquery-2.2.3.min.js"></script>

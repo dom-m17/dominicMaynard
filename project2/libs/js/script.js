@@ -32,6 +32,79 @@ $("#filterBtn").click(function () {
   
 });
 
+$("#confirmDelete").on("show.bs.modal", function (e) {
+  $('#idToDelete').val($(e.relatedTarget).attr("data-id"));
+  $('#deleteMessage').html(`<h4>Are you sure you want to delete ${$(e.relatedTarget).attr("data-name")}</h4>
+  (This effect is permanent)`);
+});
+
+$("#deleteBtn").click(function (e) {
+
+  if ($("#personnelBtn").hasClass("active")) {
+
+    const result = $.ajax({
+      url: './libs/php/deletePersonnel.php',
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        id: $('#idToDelete').val()
+      },
+      success: function(result) {
+        console.log("Employee succesfully deleted")
+        alert("Employee succesfully deleted")
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log('Error deleting employee');
+        console.log(errorThrown);
+      }
+    });
+    
+  } else {
+    
+    if ($("#departmentsBtn").hasClass("active")) {
+
+      const result = $.ajax({
+        url: './libs/php/deleteDepartmentbyID.php',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          id: $('#idToDelete').val()
+        },
+        success: function(result) {
+          console.log("Department succesfully deleted")
+          alert("Department succesfully deleted")
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log('Error deleting department');
+          console.log(errorThrown);
+        }
+      });
+      
+    } else {
+
+      const result = $.ajax({
+        url: './libs/php/deleteLocation.php',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          id: $('#idToDelete').val()
+        },
+        success: function(result) {
+          console.log("Location succesfully deleted")
+          alert("Location succesfully deleted")
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log('Error deleting location');
+          console.log(errorThrown);
+        }
+      });
+      
+    }
+    
+  }
+  
+});
+
 $("#addBtn").click(function () {
   
   // Replicate the logic of the refresh button click to open the add modal for the table that is currently on display
@@ -472,7 +545,10 @@ function getAllEmployees() {
         }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
         var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deletePersonnelBtn').attr({
             'type': 'button',
-            'data-id': employee.id
+            'data-bs-toggle': 'modal',
+            'data-bs-target': '#confirmDelete',
+            'data-id': employee.id,
+            'data-name': `${employee.firstName} ${employee.lastName}`
         }).html('<i class="fa-solid fa-trash fa-fw"></i>');
         buttonsTd.append(editButton, deleteButton);
         tr.append(buttonsTd);
@@ -534,7 +610,10 @@ function searchEmployees() {
         }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
         var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deletePersonnelBtn').attr({
             'type': 'button',
-            'data-id': employee.id
+            'data-bs-toggle': 'modal',
+            'data-bs-target': '#confirmDelete',
+            'data-id': employee.id,
+            'data-name': `${employee.firstName} ${employee.lastName}`
         }).html('<i class="fa-solid fa-trash fa-fw"></i>');
         buttonsTd.append(editButton, deleteButton);
         tr.append(buttonsTd);
@@ -571,7 +650,10 @@ function getAllDepartments() {
         }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
         var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deleteDepartmentBtn').attr({
             'type': 'button',
-            'data-id': department.id
+            'data-bs-toggle': 'modal',
+            'data-bs-target': '#confirmDelete',
+            'data-id': department.id,
+            'data-name': department.name
         }).html('<i class="fa-solid fa-trash fa-fw"></i>');
         buttonsTd.append(editButton, deleteButton);
         $row.append(buttonsTd);
@@ -601,12 +683,14 @@ function getAllLocations() {
             'type': 'button',
             'data-bs-toggle': 'modal',
             'data-bs-target': '#editLocationModal',
-            'data-id': location.Id,
+            'data-id': location.id,
             'data-name': location.name
         }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
         var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deleteLocationBtn').attr({
             'type': 'button',
-            'data-id': location.Id,
+            'data-bs-toggle': 'modal',
+            'data-bs-target': '#confirmDelete',
+            'data-id': location.id,
             'data-name': location.name
         }).html('<i class="fa-solid fa-trash fa-fw"></i>');
         buttonsTd.append(editButton, deleteButton);
