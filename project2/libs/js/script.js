@@ -26,9 +26,168 @@ $("#refreshBtn").click(function () {
   
 });
 
+$("#chooseFilterBy").on('change', function () {
+  $("#departmentFilter").css('display', 'none')
+  $("#locationFilter").css('display', 'none')
+
+  if ($("#chooseFilterBy").val() === "Department") {
+
+    $("#departmentFilter").css('display', 'block')
+  
+  } else if ($("#chooseFilterBy").val() === "Location") {
+
+    $("#locationFilter").css('display', 'block')
+  
+  }
+})
+
 $("#filterBtn").click(function () {
   
   // Open a modal of your own design that allows the user to apply a filter to the personnel table on either department or location
+  $('#addDepartmentFilter')[0].selectedIndex = 0;
+  $('#addLocationFilter')[0].selectedIndex = 0;
+  $('#chooseFilterBy')[0].selectedIndex = 0;
+  $("#departmentFilter").css('display', 'none')
+  $("#locationFilter").css('display', 'none')
+  $('#addFilterModal').modal('show');
+  
+});
+
+$("#addFilterBtn").click(function (e) {
+
+  if ($("#chooseFilterBy").val() === "Department") {
+
+    $.ajax({
+      url:
+        "./libs/php/filterByDepartment.php",
+      type: 'POST',
+      dataType: "json",
+      data: {
+        data: $("#addDepartmentFilter").val()
+      },
+      success: function (result) {
+        $('#personnelTableBody').empty();
+        result["data"]["found"].forEach(function(employee) {
+          // Create table row
+          var tr = $('<tr>');
+  
+          // Create table data for name
+          var name = employee.lastName + ', ' + employee.firstName;
+          var nameTd = $('<td>').addClass('align-middle text-nowrap').text(name);
+          tr.append(nameTd);
+  
+          // Create table data for job title
+          var jobTitleTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.jobTitle);
+          tr.append(jobTitleTd);
+  
+          // Create table data for department
+          var departmentTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.departmentName);
+          tr.append(departmentTd);
+  
+          // Create table data for location
+          var locationTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.locationName);
+          tr.append(locationTd);
+  
+          // Create table data for email
+          var emailTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.email);
+          tr.append(emailTd);
+  
+          // Create table data for buttons
+          var buttonsTd = $('<td>').addClass('text-end text-nowrap');
+          var editButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
+              'type': 'button',
+              'data-bs-toggle': 'modal',
+              'data-bs-target': '#editPersonnelModal',
+              'data-id': employee.id
+          }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
+          var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deletePersonnelBtn').attr({
+              'type': 'button',
+              'data-bs-toggle': 'modal',
+              'data-bs-target': '#confirmDelete',
+              'data-id': employee.id,
+              'data-name': `${employee.firstName} ${employee.lastName}`
+          }).html('<i class="fa-solid fa-trash fa-fw"></i>');
+          buttonsTd.append(editButton, deleteButton);
+          tr.append(buttonsTd);
+  
+          // Append the table row to the table body
+          $('#personnelTableBody').append(tr);
+      });
+      console.log("Filter successfully applied");
+    },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log(errorThrown);
+        alert("Error applying filter")
+      }
+    })
+  
+  } else if ($("#chooseFilterBy").val() === "Location") {
+
+    $.ajax({
+      url:
+        "./libs/php/filterByLocation.php",
+      type: 'POST',
+      dataType: "json",
+      data: {
+        data: $("#addLocationFilter").val()
+      },
+      success: function (result) {
+        $('#personnelTableBody').empty();
+        result["data"]["found"].forEach(function(employee) {
+          // Create table row
+          var tr = $('<tr>');
+  
+          // Create table data for name
+          var name = employee.lastName + ', ' + employee.firstName;
+          var nameTd = $('<td>').addClass('align-middle text-nowrap').text(name);
+          tr.append(nameTd);
+  
+          // Create table data for job title
+          var jobTitleTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.jobTitle);
+          tr.append(jobTitleTd);
+  
+          // Create table data for department
+          var departmentTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.departmentName);
+          tr.append(departmentTd);
+  
+          // Create table data for location
+          var locationTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.locationName);
+          tr.append(locationTd);
+  
+          // Create table data for email
+          var emailTd = $('<td>').addClass('align-middle text-nowrap d-none d-md-table-cell').text(employee.email);
+          tr.append(emailTd);
+  
+          // Create table data for buttons
+          var buttonsTd = $('<td>').addClass('text-end text-nowrap');
+          var editButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
+              'type': 'button',
+              'data-bs-toggle': 'modal',
+              'data-bs-target': '#editPersonnelModal',
+              'data-id': employee.id
+          }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
+          var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deletePersonnelBtn').attr({
+              'type': 'button',
+              'data-bs-toggle': 'modal',
+              'data-bs-target': '#confirmDelete',
+              'data-id': employee.id,
+              'data-name': `${employee.firstName} ${employee.lastName}`
+          }).html('<i class="fa-solid fa-trash fa-fw"></i>');
+          buttonsTd.append(editButton, deleteButton);
+          tr.append(buttonsTd);
+  
+          // Append the table row to the table body
+          $('#personnelTableBody').append(tr);
+      });
+      console.log("Filter successfully applied");
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log(errorThrown);
+        alert("Error applying filter")
+      }
+    })
+  
+  }
   
 });
 
@@ -251,8 +410,6 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
     }
   });
 });
-
-// Executes when the form button with type="submit" is clicked
 
 $("#editPersonnelForm").on("submit", function (e) {
   
@@ -633,6 +790,8 @@ function searchEmployees() {
 function getAllDepartments() {
   $("#searchInp").val("");
   $('#departmentTableBody').empty();
+  $('#addDepartmentFilter').empty();
+  $("#addDepartmentFilter").append("<option value='' selected disabled>Select Department</option>");
   const result = $.ajax({
     url: './libs/php/getAllDepartments.php',
     type: 'POST',
@@ -658,6 +817,13 @@ function getAllDepartments() {
         buttonsTd.append(editButton, deleteButton);
         $row.append(buttonsTd);
         $('#departmentTableBody').append($row);
+
+        $("#addDepartmentFilter").append(
+          $("<option>", {
+            value: department.id,
+            text: department.name
+          })
+        );
       });
     },
     error: function(jqXHR, textStatus, errorThrown) {
@@ -670,6 +836,8 @@ function getAllDepartments() {
 // This function populates the locations table with ALL the locations.
 function getAllLocations() {
   $('#locationTableBody').empty();
+  $('#addLocationFilter').empty();
+  $("#addLocationFilter").append("<option value='' selected disabled>Select Location</option>");
   const result = $.ajax({
     url: './libs/php/getAllLocations.php',
     type: 'POST',
@@ -696,6 +864,13 @@ function getAllLocations() {
         buttonsTd.append(editButton, deleteButton);
         $row.append(buttonsTd);
         $('#locationTableBody').append($row);
+
+        $("#addLocationFilter").append(
+          $("<option>", {
+            value: location.id,
+            text: location.name
+          })
+        );
       });
     },
     error: function(jqXHR, textStatus, errorThrown) {
