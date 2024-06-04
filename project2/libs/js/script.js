@@ -173,12 +173,106 @@ $("#addLocationFilter").on('change', function () {
   }
 )
 
-$("#confirmDelete").on("show.bs.modal", function (e) {
-  $('#idToDelete').val($(e.relatedTarget).attr("data-id"));
-  $('#deleteMessage').html(`Are you sure you want to delete <strong>${$(e.relatedTarget).attr("data-name")}</strong>?`);
+$("#confirmPersonnelDelete").on("show.bs.modal", function (e) {
+  
+  $.ajax({
+    url: "./libs/php/getPersonnelByID.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      id: $(e.relatedTarget).attr("data-id")
+    },
+    success: function (result) {
+      $('#idToDelete').val(result.data.personnel[0].id);
+      $('#deletePersonnelMessage').html(`Are you sure you want to delete <strong>${result.data.personnel[0].firstName} ${result.data.personnel[0].lastName}</strong>?`);
+    }, 
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log(errorThrown);
+    }
+  })
+});
+
+$(document).on('click', '.deleteDepartmentBtn', function (e) {
+  var departmentId = $(this).attr("data-id");
+  $.ajax({
+    url: "./libs/php/checkDepartmentUse.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      id: departmentId
+    },
+    success: function (result) {
+      if (result.data.personnel[0].personnelCount === 0) {
+        $.ajax({
+          url: "./libs/php/getDepartmentByID.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+            id: departmentId
+          },
+          success: function (result) {
+            $('#idToDelete').val(departmentId);
+            $('#deleteDepartmentMessage').html(`Are you sure you want to delete <strong>${result.data.department[0].name}</strong>?`);
+            $('#confirmDepartmentDelete').modal('show')
+          }, 
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown);
+          }
+        })
+      } else {
+        $("#cantDeleteDeptName").text(result.data.personnel[0].departmentName);
+        $("#personnelCount").text(result.data.personnel[0].personnelCount);
+        $("#cantDeleteDepartmentModal").modal("show");
+      } 
+    }, 
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log(errorThrown);
+    }
+  })
+});
+
+$(document).on('click', '.deleteLocationBtn', function (e) {
+  var locationId = $(this).attr("data-id");
+  $.ajax({
+    url: "./libs/php/checkLocationUse.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      id: locationId
+    },
+    success: function (result) {
+      if (result.data.department[0].departmentCount === 0) {
+        $.ajax({
+          url: "./libs/php/getLocationByID.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+            id: locationId
+          },
+          success: function (result) {
+            $('#idToDelete').val(locationId);
+            $('#deleteLocationMessage').html(`Are you sure you want to delete <strong>${result.data.location[0].name}</strong>?`);
+            $('#confirmLocationDelete').modal('show')
+          }, 
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown);
+          }
+        })
+      } else {
+        $("#cantDeleteLocationName").text(result.data.department[0].locationName);
+        $("#departmentCount").text(result.data.department[0].departmentCount);
+        $("#cantDeleteLocationModal").modal("show");
+      } 
+    }, 
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log(errorThrown);
+    }
+  })
 });
 
 $("#deleteForm").on("submit", function (e) {
+
+  e.preventDefault();
 
   if ($("#personnelBtn").hasClass("active")) {
 
@@ -604,8 +698,8 @@ $("#addDepartmentForm").on("submit", function (e) {
       locationId: $("#addDepartmentLocation").val()
     },
     success: function () {
-      console.log("Department successfully updated");
-      alert("Department succesfully added") // This should be changed so a modal is used rather than a window popup
+      console.log("Department successfully added");
+      alert("Department succesfully added")
       },
     error: function (jqXHR, textStatus, errorThrown) {
       console.log(errorThrown);
@@ -671,7 +765,7 @@ $("#addLocationForm").on("submit", function (e) {
 // This function populates the personnel table with ALL employees in the database
 function getAllEmployees() {
   $("#searchInp").val("")
-  $('#personnelTableBody').html();
+  $('#personnelTableBody').html("");
   const result = $.ajax({
     url: './libs/php/getAll.php',
     type: 'POST',
@@ -731,7 +825,7 @@ function getAllEmployees() {
         deleteButton.classList = 'btn btn-primary btn-sm'
         deleteButton.setAttribute('type', 'button');
         deleteButton.setAttribute('data-bs-toggle', 'modal');
-        deleteButton.setAttribute('data-bs-target', '#confirmDelete');
+        deleteButton.setAttribute('data-bs-target', '#confirmPersonnelDelete');
         deleteButton.setAttribute('data-id', employee.id);
         deleteButton.setAttribute('data-name', `${employee.firstName} ${employee.lastName}`);
         deleteButton.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
@@ -752,7 +846,7 @@ function getAllEmployees() {
 
 // This function searches the database for all employees matching the search criteria
 function searchEmployees() {
-  $('#personnelTableBody').empty();
+  $('#personnelTableBody').html("");
   const result = $.ajax({
     url: './libs/php/searchAll.php',
     type: 'POST',
@@ -815,7 +909,7 @@ function searchEmployees() {
         deleteButton.classList = 'btn btn-primary btn-sm'
         deleteButton.setAttribute('type', 'button');
         deleteButton.setAttribute('data-bs-toggle', 'modal');
-        deleteButton.setAttribute('data-bs-target', '#confirmDelete');
+        deleteButton.setAttribute('data-bs-target', '#confirmPersonnelDelete');
         deleteButton.setAttribute('data-id', employee.id);
         deleteButton.setAttribute('data-name', `${employee.firstName} ${employee.lastName}`);
         deleteButton.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
@@ -855,10 +949,10 @@ function getAllDepartments() {
             'data-bs-target': '#editDepartmentModal',
             'data-id': department.id
         }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
-        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
+        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deleteDepartmentBtn').attr({
             'type': 'button',
-            'data-bs-toggle': 'modal',
-            'data-bs-target': '#confirmDelete',
+            // 'data-bs-toggle': 'modal',
+            // 'data-bs-target': '#confirmDepartmentDelete',
             'data-id': department.id,
             'data-name': department.name
         }).html('<i class="fa-solid fa-trash fa-fw"></i>');
@@ -902,10 +996,8 @@ function getAllLocations() {
             'data-id': location.id,
             'data-name': location.name
         }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
-        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
+        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deleteLocationBtn').attr({
             'type': 'button',
-            'data-bs-toggle': 'modal',
-            'data-bs-target': '#confirmDelete',
             'data-id': location.id,
             'data-name': location.name
         }).html('<i class="fa-solid fa-trash fa-fw"></i>');

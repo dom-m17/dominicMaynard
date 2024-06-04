@@ -376,14 +376,14 @@
 
       </div>
 
-      <div id="confirmDelete" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div id="confirmPersonnelDelete" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
               
           <div class="modal-content shadow"> 
             
             <div class="modal-header bg-primary bg-gradient text-white">
-              <h5 class="modal-title">Delete entry?</h5>
+              <h5 class="modal-title">Delete personnel?</h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -391,7 +391,7 @@
 
               <input type="hidden" id="idToDelete">
       
-              <div class="modal-body text-center" id="deleteMessage"></div>
+              <div class="modal-body text-center" id="deletePersonnelMessage"></div>
 
             </form>
       
@@ -404,6 +404,120 @@
           
         </div>
 
+      </div>
+
+      <div id="confirmDepartmentDelete" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+              
+          <div class="modal-content shadow"> 
+            
+            <div class="modal-header bg-primary bg-gradient text-white">
+              <h5 class="modal-title">Delete department?</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form id="deleteForm">
+
+              <input type="hidden" id="idToDelete">
+      
+              <div class="modal-body text-center" id="deleteDepartmentMessage"></div>
+
+            </form>
+      
+            <div class="modal-footer">
+              <button type="submit" form="deleteForm" id="deleteBtn" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">YES</button>
+              <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">NO</button>
+            </div>
+      
+          </div>
+          
+        </div>
+
+      </div>
+
+      <div id="cantDeleteDepartmentModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      
+          <div class="modal-content shadow">
+      
+            <div class="modal-header bg-primary bg-gradient text-white">
+              <h5 class="modal-title">Cannot remove department ...</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+      
+            <div class="modal-body">
+      
+              You cannot remove the entry for <span id="cantDeleteDeptName" class="fw-bold"></span> because it has <span id="personnelCount" class="fw-bold"></span> employees assigned to it.
+      
+            </div>
+      
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">OK</button>
+            </div>
+      
+          </div>
+      
+        </div>
+      
+      </div>
+
+      <div id="confirmLocationDelete" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+              
+          <div class="modal-content shadow"> 
+            
+            <div class="modal-header bg-primary bg-gradient text-white">
+              <h5 class="modal-title">Delete location?</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form id="deleteForm">
+
+              <input type="hidden" id="idToDelete">
+      
+              <div class="modal-body text-center" id="deleteLocationMessage"></div>
+
+            </form>
+      
+            <div class="modal-footer">
+              <button type="submit" form="deleteForm" id="deleteBtn" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">YES</button>
+              <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">NO</button>
+            </div>
+      
+          </div>
+          
+        </div>
+
+      </div>
+
+      <div id="cantDeleteLocationModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      
+          <div class="modal-content shadow">
+      
+            <div class="modal-header bg-primary bg-gradient text-white">
+              <h5 class="modal-title">Cannot remove location ...</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+      
+            <div class="modal-body">
+      
+              You cannot remove the entry for <span id="cantDeleteLocationName" class="fw-bold"></span> because it has <span id="departmentCount" class="fw-bold"></span> departments assigned to it.
+      
+            </div>
+      
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">OK</button>
+            </div>
+      
+          </div>
+      
+        </div>
+      
       </div>
 
       <div id="addFilterModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
