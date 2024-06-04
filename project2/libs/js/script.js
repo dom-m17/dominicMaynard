@@ -193,8 +193,7 @@ $("#addFilterBtn").click(function (e) {
 
 $("#confirmDelete").on("show.bs.modal", function (e) {
   $('#idToDelete').val($(e.relatedTarget).attr("data-id"));
-  $('#deleteMessage').html(`<h4>Are you sure you want to delete ${$(e.relatedTarget).attr("data-name")}</h4>
-  (This effect is permanent)`);
+  $('#deleteMessage').html(`Are you sure you want to delete ${$(e.relatedTarget).attr("data-name")}?`);
 });
 
 $("#deleteBtn").click(function (e) {
@@ -305,20 +304,20 @@ $("#addBtn").click(function () {
       $("#addDepartmentLocation").empty();
       $("#addDepartmentLocation").append("<option value='' selected disabled>Select Location</option>");
       const result = $.ajax({
-        url: './libs/php/getAllDepartments.php',
+        url: './libs/php/getAllLocations.php',
         type: 'POST',
         dataType: 'json',
         success: function(result) {
           let appendedLocations = [];
-          result.data.forEach(function(department) {
-            if (!appendedLocations.includes(department.locationID)) {
+          result.data.forEach(function(location) {
+            if (!appendedLocations.includes(location.id)) {
             $("#addDepartmentLocation").append(
               $("<option>", {
-                value: department.locationID,
-                text: department.location
+                value: location.id,
+                text: location.name
               })
             );
-            appendedLocations.push(department.locationID);
+            appendedLocations.push(location.id);
             }
           });
         },
@@ -447,6 +446,8 @@ $("#editPersonnelForm").on("submit", function (e) {
 });
 
 $("#editDepartmentModal").on("show.bs.modal", function (e) {
+
+  $("#editDepartmentLocation").html("")
   
   $.ajax({
     url:
@@ -628,6 +629,30 @@ $("#addDepartmentForm").on("submit", function (e) {
   })
 });
 
+$("#addDepartmentForm").on("show.bs.modal", function (e) {
+  
+  // Executes when the form button with type="submit" is clicked
+  // stop the default browser behviour
+
+  e.preventDefault();
+
+  // AJAX call to save form data
+
+  const result = $.ajax({
+    url: './libs/php/getAllLocations.php',
+    type: 'POST',
+    dataType: 'json',
+    success: function(result) {
+      result.data.forEach(function(location) {
+
+      })
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log(errorThrown);
+    }
+  })
+});
+
 $("#addLocationForm").on("submit", function (e) {
   
   // Executes when the form button with type="submit" is clicked
@@ -694,13 +719,13 @@ function getAllEmployees() {
 
         // Create table data for buttons
         var buttonsTd = $('<td>').addClass('text-end text-nowrap');
-        var editButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
+        var editButton = $('<button>').addClass('btn btn-primary btn-sm me-1').attr({
             'type': 'button',
             'data-bs-toggle': 'modal',
             'data-bs-target': '#editPersonnelModal',
             'data-id': employee.id
         }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
-        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deletePersonnelBtn').attr({
+        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
             'type': 'button',
             'data-bs-toggle': 'modal',
             'data-bs-target': '#confirmDelete',
@@ -759,13 +784,13 @@ function searchEmployees() {
 
         // Create table data for buttons
         var buttonsTd = $('<td>').addClass('text-end text-nowrap');
-        var editButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
+        var editButton = $('<button>').addClass('btn btn-primary btn-sm me-1').attr({
             'type': 'button',
             'data-bs-toggle': 'modal',
             'data-bs-target': '#editPersonnelModal',
             'data-id': employee.id
         }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
-        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deletePersonnelBtn').attr({
+        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
             'type': 'button',
             'data-bs-toggle': 'modal',
             'data-bs-target': '#confirmDelete',
@@ -801,13 +826,13 @@ function getAllDepartments() {
         var $row = $('<tr>');
         $row.append($('<td class="align-middle text-nowrap">').text(department.name));
         var buttonsTd = $('<td>').addClass('text-end text-nowrap');
-        var editButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
+        var editButton = $('<button>').addClass('btn btn-primary me-1 btn-sm').attr({
             'type': 'button',
             'data-bs-toggle': 'modal',
             'data-bs-target': '#editDepartmentModal',
             'data-id': department.id
         }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
-        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deleteDepartmentBtn').attr({
+        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
             'type': 'button',
             'data-bs-toggle': 'modal',
             'data-bs-target': '#confirmDelete',
@@ -847,14 +872,14 @@ function getAllLocations() {
         var $row = $('<tr>');
         $row.append($('<td class="align-middle text-nowrap">').text(location.name));
         var buttonsTd = $('<td>').addClass('text-end text-nowrap');
-        var editButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
+        var editButton = $('<button>').addClass('btn btn-primary me-1 btn-sm').attr({
             'type': 'button',
             'data-bs-toggle': 'modal',
             'data-bs-target': '#editLocationModal',
             'data-id': location.id,
             'data-name': location.name
         }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
-        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deleteLocationBtn').attr({
+        var deleteButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
             'type': 'button',
             'data-bs-toggle': 'modal',
             'data-bs-target': '#confirmDelete',
