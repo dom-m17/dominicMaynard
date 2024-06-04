@@ -383,17 +383,21 @@
           <div class="modal-content shadow"> 
             
             <div class="modal-header bg-primary bg-gradient text-white">
-              <h5 class="modal-title">Confirm Delete</h5>
+              <h5 class="modal-title">Delete entry?</h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <input type="hidden" id="idToDelete">
+            <form id="deleteForm">
+
+              <input type="hidden" id="idToDelete">
       
-            <div class="modal-body text-center" id="deleteMessage"></div>
+              <div class="modal-body text-center" id="deleteMessage"></div>
+
+            </form>
       
             <div class="modal-footer">
-              <button type="submit" id="deleteBtn" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal" style="width: 80px;">CONFIRM</button>
-              <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+              <button type="submit" form="deleteForm" id="deleteBtn" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">YES</button>
+              <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">NO</button>
             </div>
       
           </div>
@@ -417,25 +421,16 @@
 
               <form id="addFilterForm">
 
-                <div class="form-floating mb-3">
-                  <select class="form-select" id="chooseFilterBy" placeholder="" required>
-                    <option value='' selected disabled>Choose Filter</option>
-                    <option>Department</option>
-                    <option>Location</option>
-                  </select>
-                  <label for="chooseFilterBy">Department or Location</label>
-                </div>  
-
                 <input type="hidden" id="filterDepartmentId">
 
-                <div class="form-floating" type="hidden" style="display: none;" id="departmentFilter">
+                <div class="form-floating mb-3" type="hidden" id="departmentFilter">
                   <select class="form-select" id="addDepartmentFilter" placeholder="Department" required></select>
                   <label for="addDepartmentFilter">Department</label>
                 </div>  
 
                 <input type="hidden" id="filterLocationId">
 
-                <div class="form-floating" style="display: none;" id="locationFilter">
+                <div class="form-floating" id="locationFilter">
                   <select class="form-select" id="addLocationFilter" placeholder="Location" required></select>
                   <label for="addLocationFilter">Location</label>
                 </div>  
@@ -445,7 +440,6 @@
             </div>
       
             <div class="modal-footer">
-              <button type="submit" id="addFilterBtn" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal" style="width: 80px;">CONFIRM</button>
               <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
             </div>
       
