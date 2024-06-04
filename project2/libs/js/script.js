@@ -784,14 +784,14 @@ function searchEmployees() {
         // Create table data for department
         var departmentTd = document.createElement("td");
         departmentTd.classList = 'align-middle text-nowrap d-none d-md-table-cell';
-        var departmentText = document.createTextNode(employee.department);
+        var departmentText = document.createTextNode(employee.departmentName);
         departmentTd.append(departmentText)
         tr.append(departmentTd)
 
         // Create table data for location
         var locationTd = document.createElement("td");
         locationTd.classList = 'align-middle text-nowrap d-none d-md-table-cell';
-        var locationText = document.createTextNode(employee.location);
+        var locationText = document.createTextNode(employee.locationName);
         locationTd.append(locationText)
         tr.append(locationTd)
 
