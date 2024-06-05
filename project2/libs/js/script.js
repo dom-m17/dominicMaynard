@@ -40,7 +40,7 @@ $("#addDepartmentFilter").on('change', function () {
 
   $.ajax({
     url:
-      "./libs/php/filterByDepartment.php",
+      "libs/php/filterByDepartment.php",
     type: 'POST',
     dataType: "json",
     data: {
@@ -108,7 +108,7 @@ $("#addLocationFilter").on('change', function () {
 
   $.ajax({
       url:
-        "./libs/php/filterByLocation.php",
+        "libs/php/filterByLocation.php",
       type: 'POST',
       dataType: "json",
       data: {
@@ -176,7 +176,7 @@ $("#addLocationFilter").on('change', function () {
 $("#confirmPersonnelDelete").on("show.bs.modal", function (e) {
   
   $.ajax({
-    url: "./libs/php/getPersonnelByID.php",
+    url: "libs/php/getPersonnelByID.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -195,7 +195,7 @@ $("#confirmPersonnelDelete").on("show.bs.modal", function (e) {
 $(document).on('click', '.deleteDepartmentBtn', function (e) {
   var departmentId = $(this).attr("data-id");
   $.ajax({
-    url: "./libs/php/checkDepartmentUse.php",
+    url: "libs/php/checkDepartmentUse.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -204,7 +204,7 @@ $(document).on('click', '.deleteDepartmentBtn', function (e) {
     success: function (result) {
       if (result.data.personnel[0].personnelCount === 0) {
         $.ajax({
-          url: "./libs/php/getDepartmentByID.php",
+          url: "libs/php/getDepartmentByID.php",
           type: "POST",
           dataType: "json",
           data: {
@@ -234,7 +234,7 @@ $(document).on('click', '.deleteDepartmentBtn', function (e) {
 $(document).on('click', '.deleteLocationBtn', function (e) {
   var locationId = $(this).attr("data-id");
   $.ajax({
-    url: "./libs/php/checkLocationUse.php",
+    url: "libs/php/checkLocationUse.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -243,7 +243,7 @@ $(document).on('click', '.deleteLocationBtn', function (e) {
     success: function (result) {
       if (result.data.department[0].departmentCount === 0) {
         $.ajax({
-          url: "./libs/php/getLocationByID.php",
+          url: "libs/php/getLocationByID.php",
           type: "POST",
           dataType: "json",
           data: {
@@ -277,7 +277,7 @@ $("#deleteForm").on("submit", function (e) {
   if ($("#personnelBtn").hasClass("active")) {
 
     const result = $.ajax({
-      url: './libs/php/deletePersonnel.php',
+      url: 'libs/php/deletePersonnel.php',
       type: 'POST',
       dataType: 'json',
       data: {
@@ -298,7 +298,7 @@ $("#deleteForm").on("submit", function (e) {
     if ($("#departmentsBtn").hasClass("active")) {
 
       const result = $.ajax({
-        url: './libs/php/deleteDepartmentbyID.php',
+        url: 'libs/php/deleteDepartmentbyID.php',
         type: 'POST',
         dataType: 'json',
         data: {
@@ -317,7 +317,7 @@ $("#deleteForm").on("submit", function (e) {
     } else {
 
       const result = $.ajax({
-        url: './libs/php/deleteLocation.php',
+        url: 'libs/php/deleteLocation.php',
         type: 'POST',
         dataType: 'json',
         data: {
@@ -353,7 +353,7 @@ $("#addBtn").click(function () {
     $("#addPersonnelDepartment").empty();
     $("#addPersonnelDepartment").append("<option value='' selected disabled>Select Department</option>");
     const result = $.ajax({
-      url: './libs/php/getAllDepartments.php',
+      url: 'libs/php/getAllDepartments.php',
       type: 'POST',
       dataType: 'json',
       success: function(result) {
@@ -380,7 +380,7 @@ $("#addBtn").click(function () {
       $("#addDepartmentLocation").empty();
       $("#addDepartmentLocation").append("<option value='' selected disabled>Select Location</option>");
       const result = $.ajax({
-        url: './libs/php/getAllLocations.php',
+        url: 'libs/php/getAllLocations.php',
         type: 'POST',
         dataType: 'json',
         success: function(result) {
@@ -438,7 +438,7 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
   
   $.ajax({
     url:
-      "./libs/php/getPersonnelByID.php",
+      "libs/php/getPersonnelByID.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -500,7 +500,7 @@ $("#editPersonnelForm").on("submit", function (e) {
 
   $.ajax({
     url:
-      "./libs/php/editPersonnel.php",
+      "libs/php/editPersonnel.php",
     type: 'POST',
     dataType: "json",
     data: {
@@ -530,7 +530,7 @@ $("#editDepartmentModal").on("show.bs.modal", function (e) {
   
   $.ajax({
     url:
-      "./libs/php/getDepartmentByID.php",
+      "libs/php/getDepartmentByID.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -589,7 +589,7 @@ $("#editDepartmentForm").on("submit", function (e) {
 
   $.ajax({
     url:
-      "./libs/php/editDepartment.php",
+      "libs/php/editDepartment.php",
     type: 'POST',
     dataType: "json",
     data: {
@@ -627,7 +627,7 @@ $("#editLocationForm").on("submit", function (e) {
 
   $.ajax({
     url:
-      "./libs/php/editLocation.php",
+      "libs/php/editLocation.php",
     type: 'POST',
     dataType: "json",
     data: {
@@ -656,7 +656,7 @@ $("#addPersonnelForm").on("submit", function (e) {
 
   $.ajax({
     url:
-      "./libs/php/insertPersonnel.php",
+      "libs/php/insertPersonnel.php",
     type: 'POST',
     dataType: "json",
     data: {
@@ -690,7 +690,7 @@ $("#addDepartmentForm").on("submit", function (e) {
 
   $.ajax({
     url:
-      "./libs/php/insertDepartment.php",
+      "libs/php/insertDepartment.php",
     type: 'POST',
     dataType: "json",
     data: {
@@ -718,7 +718,7 @@ $("#addDepartmentForm").on("show.bs.modal", function (e) {
   // AJAX call to save form data
 
   const result = $.ajax({
-    url: './libs/php/getAllLocations.php',
+    url: 'libs/php/getAllLocations.php',
     type: 'POST',
     dataType: 'json',
     success: function(result) {
@@ -743,7 +743,7 @@ $("#addLocationForm").on("submit", function (e) {
 
   $.ajax({
     url:
-      "./libs/php/insertLocation.php",
+      "libs/php/insertLocation.php",
     type: 'POST',
     dataType: "json",
     data: {
@@ -767,7 +767,7 @@ function getAllEmployees() {
   $("#searchInp").val("")
   $('#personnelTableBody').html("");
   const result = $.ajax({
-    url: './libs/php/getAll.php',
+    url: 'libs/php/getAll.php',
     type: 'POST',
     dataType: 'json',
     success: function(result) {
@@ -848,7 +848,7 @@ function getAllEmployees() {
 function searchEmployees() {
   $('#personnelTableBody').html("");
   const result = $.ajax({
-    url: './libs/php/searchAll.php',
+    url: 'libs/php/searchAll.php',
     type: 'POST',
     dataType: 'json',
     data: {
@@ -935,7 +935,7 @@ function getAllDepartments() {
   $('#addDepartmentFilter').empty();
   $("#addDepartmentFilter").append("<option value=''>Any</option>");
   const result = $.ajax({
-    url: './libs/php/getAllDepartments.php',
+    url: 'libs/php/getAllDepartments.php',
     type: 'POST',
     dataType: 'json',
     success: function(result) {
@@ -981,7 +981,7 @@ function getAllLocations() {
   $('#addLocationFilter').empty();
   $("#addLocationFilter").append("<option value=''>Any</option>");
   const result = $.ajax({
-    url: './libs/php/getAllLocations.php',
+    url: 'libs/php/getAllLocations.php',
     type: 'POST',
     dataType: 'json',
     success: function(result) {
@@ -1019,83 +1019,6 @@ function getAllLocations() {
     }
   });
 }
-
-// This function populates the departments table with ALL departments and the locations table with ALL the locations.
-// function getAllDepartmentsAndLocations() {
-//   $("#searchInp").val("")
-//   $('#departmentTableBody').empty();
-//   $('#locationTableBody').empty();
-//   let appendedLocations = []
-//   const result = $.ajax({
-//     url: './libs/php/getAllDepartments.php',
-//     type: 'POST',
-//     dataType: 'json',
-//     success: function(result) {
-//       // Loop through each department in the result data
-//       result.data.forEach(function(department) {
-//         // Create a new table row
-//         var $row = $('<tr>');
-
-//         // Create and append table data for department name
-//         $row.append($('<td class="align-middle text-nowrap">').text(department.name));
-
-//         // Create and append table data for department location
-//         $row.append($('<td class="align-middle text-nowrap d-none d-md-table-cell">').text(department.location));
-
-//         // Create and append table data for edit and delete buttons
-//         var buttonsTd = $('<td>').addClass('text-end text-nowrap');
-//         var editButton = $('<button>').addClass('btn btn-primary btn-sm').attr({
-//             'type': 'button',
-//             'data-bs-toggle': 'modal',
-//             'data-bs-target': '#editDepartmentModal',
-//             'data-id': department.id
-//         }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
-//         var deleteButton = $('<button>').addClass('btn btn-primary btn-sm deleteDepartmentBtn').attr({
-//             'type': 'button',
-//             'data-id': department.id
-//         }).html('<i class="fa-solid fa-trash fa-fw"></i>');
-//         buttonsTd.append(editButton, deleteButton);
-//         $row.append(buttonsTd);
-
-//         // Append the row to the table
-//         $('#departmentTableBody').append($row);
-        
-//         if (!appendedLocations.includes(department.locationID)) {
-//           // Create a new table row
-//           var $row2 = $('<tr>');
-
-//           // Create and append table data for location name
-//           $row2.append($('<td class="align-middle text-nowrap">').text(department.location));
-
-//           // Create and append table data for edit and delete buttons
-//           var buttonsTd2 = $('<td>').addClass('text-end text-nowrap');
-//           var editButton2 = $('<button>').addClass('btn btn-primary btn-sm').attr({
-//               'type': 'button',
-//               'data-bs-toggle': 'modal',
-//               'data-bs-target': '#editLocationModal',
-//               'data-id': department.locationID,
-//               'data-name': department.location
-//           }).html('<i class="fa-solid fa-pencil fa-fw"></i>');
-//           var deleteButton2 = $('<button>').addClass('btn btn-primary btn-sm deleteLocationBtn').attr({
-//               'type': 'button',
-//               'data-id': department.locationID,
-//               'data-name': department.location
-//           }).html('<i class="fa-solid fa-trash fa-fw"></i>');
-//           buttonsTd2.append(editButton2, deleteButton2);
-//           $row2.append(buttonsTd2);
-
-//           // Append the row to the table
-//           $('#locationTableBody').append($row2);
-//           appendedLocations.push(department.locationID)
-//         }
-//       });
-//     },
-//     error: function(jqXHR, textStatus, errorThrown) {
-//       console.log('Error');
-//       console.log(errorThrown);
-//     }
-//   });
-// } 
 
 $(document).ready(function() {
 
