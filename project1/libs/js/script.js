@@ -67,8 +67,7 @@ $('.btn-close').on('click', function() {
     $(".modal").modal("hide");
 });
 
-$('.btn-close').html('<img src="./resources/x.png" width="20" height="20">');
-
+// $('.btn-close').html('<img src="./resources/x.png" width="20" height="20">');
 
 document.addEventListener('DOMContentLoaded', function() {
     fetch('./resources/countryBorders.geo.json')
@@ -892,4 +891,3 @@ $(document).ready(function() {
         }
     })
 });
-
