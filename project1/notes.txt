@@ -1,2 +1,0 @@
- **Add a pre-loader to hide the site until the first country has rendered
- - Preloader has been added but is just a blank screen. Worth adding something to it?
